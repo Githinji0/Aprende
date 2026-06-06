@@ -1,0 +1,149 @@
+[
+  {
+    "title": "Greetings & Basics",
+    "difficulty": "Beginner",
+    "description": "Learn basic Spanish greetings and polite phrases.",
+    "xpReward": 15,
+    "vocabulary": [
+      {
+        "spanish": "Hola",
+        "english": "Hello",
+        "pronunciationHint": "oh-lah"
+      },
+      {
+        "spanish": "Buenos días",
+        "english": "Good morning",
+        "pronunciationHint": "bweh-nohs dee-ahs"
+      },
+      {
+        "spanish": "Gracias",
+        "english": "Thank you",
+        "pronunciationHint": "grah-syahs"
+      },
+      {
+        "spanish": "Adiós",
+        "english": "Goodbye",
+        "pronunciationHint": "ah-dyohs"
+      }
+    ],
+    "quizzes": [
+      {
+        "type": "multiple-choice",
+        "question": "What is the English translation for 'Gracias'?",
+        "options": ["Please", "Thank you", "Goodbye", "Hello"],
+        "answerKey": "Thank you",
+        "englishTranslation": "Gracias translates to Thank you."
+      },
+      {
+        "type": "spelling",
+        "question": "Translate 'Hello' to Spanish.",
+        "answerKey": "Hola",
+        "englishTranslation": "Hola means Hello."
+      },
+      {
+        "type": "pronunciation",
+        "question": "Say 'Buenos días' aloud.",
+        "answerKey": "Buenos días",
+        "englishTranslation": "Buenos días means Good morning."
+      }
+    ]
+  },
+  {
+    "title": "At the Restaurant",
+    "difficulty": "Intermediate",
+    "description": "Practice ordering food and requesting the bill in Spanish.",
+    "xpReward": 25,
+    "vocabulary": [
+      {
+        "spanish": "La comida",
+        "english": "The food",
+        "pronunciationHint": "lah koh-mee-dah"
+      },
+      {
+        "spanish": "La cuenta, por favor",
+        "english": "The bill, please",
+        "pronunciationHint": "lah kwen-tah por fah-vor"
+      },
+      {
+        "spanish": "El camarero",
+        "english": "The waiter",
+        "pronunciationHint": "el kah-mah-reh-roh"
+      },
+      {
+        "spanish": "Quiero un café",
+        "english": "I want a coffee",
+        "pronunciationHint": "kyeh-roh oon kah-feh"
+      }
+    ],
+    "quizzes": [
+      {
+        "type": "multiple-choice",
+        "question": "How do you ask a waiter for the bill?",
+        "options": ["Quiero un café", "La cuenta, por favor", "La comida es buena", "Hola señor"],
+        "answerKey": "La cuenta, por favor",
+        "englishTranslation": "La cuenta, por favor means 'The bill, please'."
+      },
+      {
+        "type": "spelling",
+        "question": "Translate 'I want a coffee' into Spanish (Watch your accents!).",
+        "answerKey": "Quiero un café",
+        "englishTranslation": "Quiero un café means 'I want a coffee'."
+      },
+      {
+        "type": "pronunciation",
+        "question": "Read the following word: 'El camarero'.",
+        "answerKey": "El camarero",
+        "englishTranslation": "El camarero means 'The waiter'."
+      }
+    ]
+  },
+  {
+    "title": "Directions & Travel",
+    "difficulty": "Advanced",
+    "description": "Master requesting directions and navigating around a Spanish-speaking city.",
+    "xpReward": 40,
+    "vocabulary": [
+      {
+        "spanish": "¿Dónde está el baño?",
+        "english": "Where is the bathroom?",
+        "pronunciationHint": "dohn-deh es-tah el bah-nyoh"
+      },
+      {
+        "spanish": "Gira a la derecha",
+        "english": "Turn right",
+        "pronunciationHint": "hee-rah ah lah deh-reh-chah"
+      },
+      {
+        "spanish": "Sigue recto",
+        "english": "Go straight",
+        "pronunciationHint": "see-geh rek-toh"
+      },
+      {
+        "spanish": "La estación de tren",
+        "english": "The train station",
+        "pronunciationHint": "lah es-tah-syohn deh tren"
+      }
+    ],
+    "quizzes": [
+      {
+        "type": "multiple-choice",
+        "question": "What does 'Sigue recto' mean?",
+        "options": ["Turn right", "Turn left", "Go straight", "Where is it?"],
+        "answerKey": "Go straight",
+        "englishTranslation": "Sigue recto means 'Go straight'."
+      },
+      {
+        "type": "spelling",
+        "question": "Translate 'Where is the bathroom?' into Spanish (Write it exactly: ¿Dónde está el baño?).",
+        "answerKey": "¿Dónde está el baño?",
+        "englishTranslation": "¿Dónde está el baño? means 'Where is the bathroom?'"
+      },
+      {
+        "type": "pronunciation",
+        "question": "Read the following phrase: 'La estación de tren'.",
+        "answerKey": "La estación de tren",
+        "englishTranslation": "La estación de tren means 'The train station'."
+      }
+    ]
+  }
+]
