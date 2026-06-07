@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, BookOpen, Volume2, Mic, CheckCircle, AlertCircle, XCircle, ArrowRight, Award, Flame } from 'lucide-react';
+import { ArrowLeft, BookOpen, Volume2, Mic, CheckCircle, AlertCircle, XCircle, ArrowRight, Award, Flame, Keyboard, Trophy, Sparkles } from 'lucide-react';
 import AudioSpeaker from '../components/AudioSpeaker';
 import MicListener from '../components/MicListener';
 import { checkSpelling, stripAccents } from '../utils/stringMetrics';
@@ -15,6 +15,7 @@ const LessonInterface = ({ lessonId, token, onBackToDashboard }) => {
   // Quiz state
   const [currentQuizIndex, setCurrentQuizIndex] = useState(0);
   const [userSpellingInput, setUserSpellingInput] = useState('');
+  const [useSpeechFallback, setUseSpeechFallback] = useState(false);
   const [userSelectedOption, setUserSelectedOption] = useState(null);
   const [userSpeechTranscript, setUserSpeechTranscript] = useState('');
   
@@ -43,6 +44,9 @@ const LessonInterface = ({ lessonId, token, onBackToDashboard }) => {
           throw new Error(data.message || 'Failed to load lesson details.');
         }
         setLesson(data);
+        if (data.lessonType === 'checkpoint') {
+          setPhase('quiz');
+        }
       } catch (err) {
         setError(err.message);
       } finally {
@@ -55,9 +59,40 @@ const LessonInterface = ({ lessonId, token, onBackToDashboard }) => {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[70vh] gap-4">
-        <div className="w-12 h-12 border-4 border-indigo-200 border-t-accent-indigo rounded-full animate-spin"></div>
-        <p className="text-brand-500 font-semibold">Cargando lección...</p>
+      <div className="max-w-3xl mx-auto px-4 py-8 animate-pulse flex flex-col gap-6">
+        {/* Header Skeleton */}
+        <div className="flex items-center justify-between border-b border-brand-200 pb-4 mb-2">
+          <div className="h-5 w-24 bg-brand-200 rounded-lg"></div>
+          <div className="flex flex-col items-end gap-1.5">
+            <div className="h-3.5 w-20 bg-brand-200 rounded-full"></div>
+            <div className="h-6 w-48 bg-brand-200 rounded-lg"></div>
+          </div>
+        </div>
+
+        {/* Card Body Skeleton */}
+        <div className="border border-brand-200 rounded-3xl p-6 md:p-8 flex flex-col gap-6 bg-white/60">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 bg-brand-200 rounded-full"></div>
+            <div className="h-5 w-40 bg-brand-200 rounded-lg"></div>
+          </div>
+          <div className="h-4 w-full bg-brand-200 rounded"></div>
+
+          {/* Grid list of terms */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-2">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="h-24 bg-brand-100/60 border border-brand-200 rounded-2xl p-5 flex items-center justify-between animate-pulse">
+                <div className="flex flex-col gap-2">
+                  <div className="h-6 w-24 bg-brand-200 rounded"></div>
+                  <div className="h-4 w-16 bg-brand-200 rounded"></div>
+                </div>
+                <div className="w-8 h-8 bg-brand-200 rounded-full"></div>
+              </div>
+            ))}
+          </div>
+
+          {/* CTA Button Skeleton */}
+          <div className="h-14 bg-brand-200 rounded-2xl w-full"></div>
+        </div>
       </div>
     );
   }
@@ -202,6 +237,7 @@ const LessonInterface = ({ lessonId, token, onBackToDashboard }) => {
     setUserSpellingInput('');
     setUserSelectedOption(null);
     setUserSpeechTranscript('');
+    setUseSpeechFallback(false);
 
     const nextIndex = currentQuizIndex + 1;
     if (nextIndex < lesson.quizzes.length) {
@@ -240,6 +276,25 @@ const LessonInterface = ({ lessonId, token, onBackToDashboard }) => {
         setSavingProgress(false);
       }
     }
+  };
+
+  const renderAccentHelper = (setter) => {
+    if (answered) return null;
+    const spanishChars = ['á', 'é', 'í', 'ó', 'ú', 'ü', 'ñ', '¿', '¡'];
+    return (
+      <div className="flex flex-wrap items-center justify-center gap-1.5 mt-2">
+        {spanishChars.map(char => (
+          <button
+            key={char}
+            type="button"
+            onClick={() => setter(prev => prev + char)}
+            className="w-9 h-9 rounded-xl bg-brand-100 hover:bg-brand-200 border border-brand-200 text-sm font-bold text-brand-800 transition-colors shadow-sm select-none focus:outline-none"
+          >
+            {char}
+          </button>
+        ))}
+      </div>
+    );
   };
 
   return (
@@ -315,13 +370,22 @@ const LessonInterface = ({ lessonId, token, onBackToDashboard }) => {
           
           {/* Progress Bar */}
           <div className="flex flex-col gap-1.5">
-            <div className="flex justify-between text-xs font-bold text-brand-500 pl-1 uppercase tracking-wider">
-              <span>Practicing</span>
+            <div className="flex justify-between text-xs font-bold text-brand-500 pl-1 uppercase tracking-wider items-center">
+              <span className="flex items-center gap-1">
+                {lesson.lessonType === 'checkpoint' ? (
+                  <>
+                    <span>Chapter Assessment</span>
+                    <Trophy size={14} className="text-yellow-500 fill-yellow-100" />
+                  </>
+                ) : (
+                  'Practicing'
+                )}
+              </span>
               <span>Question {currentQuizIndex + 1} of {lesson.quizzes.length}</span>
             </div>
             <div className="w-full h-3 bg-brand-200 rounded-full overflow-hidden">
               <div 
-                className="h-full bg-gradient-to-r from-accent-indigo to-accent-teal transition-all duration-300"
+                className="h-full bg-gradient-to-r from-accent-indigo to-accent-violet transition-all duration-300"
                 style={{ width: `${((currentQuizIndex + 1) / lesson.quizzes.length) * 100}%` }}
               ></div>
             </div>
@@ -333,7 +397,7 @@ const LessonInterface = ({ lessonId, token, onBackToDashboard }) => {
             {/* Quiz Header Instruction */}
             <div className="flex flex-col">
               <span className="text-xs font-extrabold text-indigo-500 uppercase tracking-widest mb-1 pl-0.5">
-                Challenge Mode: {currentQuiz.type.replace('-', ' ')}
+                {lesson.lessonType === 'checkpoint' ? 'Special Assessment Challenge' : `Challenge Mode: ${currentQuiz.type.replace('-', ' ')}`}
               </span>
               <h3 className="text-xl font-bold text-brand-900">
                 {currentQuiz.question}
@@ -374,12 +438,14 @@ const LessonInterface = ({ lessonId, token, onBackToDashboard }) => {
                   disabled={answered}
                   value={userSpellingInput}
                   onChange={(e) => setUserSpellingInput(e.target.value)}
-                  placeholder="Escribe la respuesta en español..."
+                  placeholder="Type the Spanish answer..."
                   className="w-full p-4 bg-brand-100/50 border border-brand-200 rounded-2xl text-lg font-bold text-brand-900 placeholder-brand-400 focus:bg-white focus:border-accent-indigo outline-none focus:ring-2 focus:ring-indigo-100 transition-all duration-200 disabled:opacity-75 disabled:bg-brand-50"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') evaluateSpelling();
                   }}
                 />
+
+                {renderAccentHelper(setUserSpellingInput)}
 
                 {!answered && (
                   <button
@@ -406,14 +472,62 @@ const LessonInterface = ({ lessonId, token, onBackToDashboard }) => {
                 </div>
                 
                 <p className="text-xs text-brand-500 font-medium text-center max-w-sm">
-                  Click the microphone button and read the phrase above loudly in Spanish.
+                  {useSpeechFallback 
+                    ? "Type the Spanish phrase exactly as shown above to verify spelling." 
+                    : "Click the microphone button and read the phrase above loudly in Spanish."}
                 </p>
 
-                {!answered && (
-                  <MicListener 
-                    onTranscript={evaluateSpeech} 
-                    lang="es-MX" 
-                  />
+                {!answered && !useSpeechFallback && (
+                  <div className="flex flex-col items-center gap-4 w-full">
+                    <MicListener 
+                      onTranscript={evaluateSpeech} 
+                      lang="es-MX" 
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setUseSpeechFallback(true)}
+                      className="text-xs text-accent-indigo hover:text-indigo-600 font-extrabold focus:outline-none flex items-center justify-center gap-1.5"
+                    >
+                      <Keyboard size={14} />
+                      <span>Type instead (Microphone not working)</span>
+                    </button>
+                  </div>
+                )}
+
+                {!answered && useSpeechFallback && (
+                  <div className="flex flex-col gap-3 w-full max-w-md">
+                    <input
+                      type="text"
+                      value={userSpellingInput}
+                      onChange={(e) => setUserSpellingInput(e.target.value)}
+                      placeholder="Type the phrase here..."
+                      className="w-full p-3.5 bg-white border border-brand-200 focus:border-accent-indigo outline-none focus:ring-2 focus:ring-indigo-100 rounded-2xl font-semibold text-center text-brand-900 text-sm"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') evaluateSpeech(userSpellingInput);
+                      }}
+                    />
+
+                    {renderAccentHelper(setUserSpellingInput)}
+
+                    <div className="flex justify-between items-center px-1">
+                      <button
+                        type="button"
+                        onClick={() => evaluateSpeech(userSpellingInput)}
+                        disabled={!userSpellingInput.trim()}
+                        className="px-4 py-2.5 bg-accent-indigo text-white font-bold rounded-xl text-xs hover:bg-indigo-600 transition-colors shadow-sm shadow-indigo-100"
+                      >
+                        Submit Spelling
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setUseSpeechFallback(false)}
+                        className="text-xs text-brand-500 hover:text-brand-700 font-bold focus:outline-none flex items-center gap-1"
+                      >
+                        <Mic size={14} />
+                        <span>Use microphone instead</span>
+                      </button>
+                    </div>
+                  </div>
                 )}
 
                 {userSpeechTranscript && (
@@ -450,8 +564,8 @@ const LessonInterface = ({ lessonId, token, onBackToDashboard }) => {
                   )}
                   <span>
                     {isCorrect 
-                      ? warningMessage ? '¡Casi!' : '¡Excelente! Correcto' 
-                      : 'Incorrecto'
+                      ? warningMessage ? 'Almost!' : 'Excellent! Correct' 
+                      : 'Incorrect'
                     }
                   </span>
                 </div>
@@ -487,21 +601,38 @@ const LessonInterface = ({ lessonId, token, onBackToDashboard }) => {
       {quizFinished && (
         <div className="glass-card p-8 rounded-3xl border border-white/40 shadow-2xl text-center flex flex-col items-center gap-6 animate-fade-in">
           
-          <div className="bg-gradient-to-tr from-accent-indigo to-accent-teal p-5 rounded-full text-white shadow-xl shadow-indigo-100">
+          <div className="bg-gradient-to-tr from-accent-indigo to-accent-violet p-5 rounded-full text-white shadow-xl shadow-indigo-100">
             <Award size={48} className="animate-bounce" />
           </div>
 
           <div>
-            <h2 className="text-2xl font-extrabold text-brand-900">¡Felicidades!</h2>
+            <h2 className="text-2xl font-extrabold text-brand-900 mt-2">
+              <span className="flex items-center justify-center gap-2">
+                {lesson.lessonType === 'checkpoint' ? (
+                  <>
+                    <Trophy className="text-yellow-500 fill-yellow-100" size={26} />
+                    <span>Chapter Passed!</span>
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="text-yellow-500 animate-pulse" size={26} />
+                    <span>Congratulations!</span>
+                  </>
+                )}
+              </span>
+            </h2>
             <p className="text-brand-500 text-sm mt-1">
-              You completed the lesson: <strong className="text-brand-800">{lesson.title}</strong>
+              {lesson.lessonType === 'checkpoint'
+                ? 'You successfully passed the Chapter Assessment: '
+                : 'You completed the lesson: '}
+              <strong className="text-brand-800">{lesson.title}</strong>
             </p>
           </div>
 
           {savingProgress ? (
             <div className="flex flex-col items-center gap-2 py-4">
               <div className="w-8 h-8 border-4 border-indigo-200 border-t-accent-indigo rounded-full animate-spin"></div>
-              <span className="text-sm font-semibold text-brand-500">Guardando tus logros en la base de datos...</span>
+              <span className="text-sm font-semibold text-brand-500">Saving your accomplishments to the database...</span>
             </div>
           ) : completionResult ? (
             <div className="flex flex-col gap-5 w-full max-w-sm">
@@ -522,7 +653,7 @@ const LessonInterface = ({ lessonId, token, onBackToDashboard }) => {
                 <div className="bg-brand-50 border border-brand-200 p-4 rounded-2xl flex flex-col items-center">
                   <Flame size={24} className="text-orange-500 fill-orange-50" />
                   <span className="text-lg font-bold text-brand-900 mt-1">
-                    {completionResult.streak} días
+                    {completionResult.streak} days
                   </span>
                   <span className="text-[10px] text-brand-400 uppercase tracking-widest font-extrabold">
                     Active Streak

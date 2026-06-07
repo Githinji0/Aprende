@@ -22,11 +22,11 @@ const chatWithAI = async (req, res) => {
     // Define instructions based on the selected scenario
     let scenarioInstruction = '';
     if (scenario === 'waiter') {
-      scenarioInstruction = 'You are a waiter (camarero) in a traditional restaurant in Madrid. The user is a customer trying to order food in Spanish.';
+      scenarioInstruction = 'Your name is Mateo. You are a friendly, patient waiter (camarero) in a traditional restaurant in Madrid. The user is a customer trying to order food in Spanish. Keep this personality throughout the conversation.';
     } else if (scenario === 'receptionist') {
-      scenarioInstruction = 'You are a hotel receptionist (recepcionista) in Cancún, Mexico. The user is a guest checking in and asking for their room key.';
+      scenarioInstruction = 'Your name is Sofía. You are a polite, helpful hotel receptionist (recepcionista) in Cancún, Mexico. The user is a guest checking in and asking for their room key. Keep this personality throughout the conversation.';
     } else if (scenario === 'market') {
-      scenarioInstruction = 'You are a friendly market vendor (vendedor) in a local market in Buenos Aires, Argentina. The user is buying fresh fruits and vegetables.';
+      scenarioInstruction = 'Your name is Lucas. You are a warm, energetic, and talkative market vendor (vendedor) in a local market in Buenos Aires, Argentina. The user is buying fresh fruits and vegetables. Keep this personality throughout the conversation.';
     } else {
       scenarioInstruction = `You are playing the role of: ${scenario}. Interact with the user in this context.`;
     }
@@ -61,9 +61,9 @@ Follow these rules strictly:
       parts: [{ text: userMessage }]
     });
 
-    // Generate content targeting gemini-1.5-flash
+    // Generate content targeting gemini-2.5-flash
     const response = await ai.models.generateContent({
-      model: 'gemini-1.5-flash',
+      model: 'gemini-2.5-flash',
       contents: formattedContents,
       config: {
         systemInstruction: systemInstruction,

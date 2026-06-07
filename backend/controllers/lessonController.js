@@ -5,7 +5,7 @@ const Lesson = require('../models/Lesson');
 // @access  Private
 const getLessons = async (req, res) => {
   try {
-    const lessons = await Lesson.find({}).select('title difficulty description xpReward');
+    const lessons = await Lesson.find({}).select('title difficulty description xpReward chapterNumber chapterTitle lessonOrder lessonType');
     res.json(lessons);
   } catch (error) {
     res.status(500).json({ message: error.message });

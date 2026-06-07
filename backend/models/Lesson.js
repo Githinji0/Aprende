@@ -41,6 +41,25 @@ const lessonSchema = new mongoose.Schema({
     type: Number,
     default: 10,
   },
+  chapterNumber: {
+    type: Number,
+    required: true,
+  },
+  chapterTitle: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  lessonOrder: {
+    type: Number,
+    required: true,
+  },
+  lessonType: {
+    type: String,
+    enum: ['standard', 'speaking', 'checkpoint'],
+    default: 'standard',
+    required: true,
+  },
   vocabulary: [{
     spanish: { type: String, required: true },
     english: { type: String, required: true },

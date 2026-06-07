@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flame, Star, LogOut, MessageSquare, BookOpen, User } from 'lucide-react';
+import { Flame, Star, LogOut, MessageSquare, BookOpen, User, Award, GraduationCap, Languages } from 'lucide-react';
 
 const Navbar = ({ user, currentTab, setCurrentTab, onLogout }) => {
   return (
@@ -11,10 +11,8 @@ const Navbar = ({ user, currentTab, setCurrentTab, onLogout }) => {
           className="flex items-center gap-2 cursor-pointer"
           onClick={() => user && setCurrentTab('dashboard')}
         >
-          <div className="bg-gradient-to-tr from-accent-indigo to-accent-teal p-2 rounded-xl text-white shadow-md shadow-indigo-100">
-            <span className="text-xl font-bold">🎓</span>
-          </div>
-          <span className="text-xl font-bold bg-gradient-to-r from-accent-indigo to-accent-teal bg-clip-text text-transparent">
+          <img src="/logo.png" alt="Aprende Logo" className="w-8 h-8 object-contain" />
+          <span className="text-xl font-bold bg-gradient-to-r from-accent-indigo to-accent-violet bg-clip-text text-transparent">
             Aprende
           </span>
         </div>
@@ -47,6 +45,18 @@ const Navbar = ({ user, currentTab, setCurrentTab, onLogout }) => {
               >
                 <MessageSquare size={16} />
                 <span className="hidden sm:inline">AI Roleplay</span>
+              </button>
+
+              <button
+                onClick={() => setCurrentTab('progress')}
+                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 ${
+                  currentTab === 'progress'
+                    ? 'bg-accent-indigo text-white shadow-sm'
+                    : 'text-brand-600 hover:bg-brand-100'
+                }`}
+              >
+                <Award size={16} />
+                <span className="hidden sm:inline">Review</span>
               </button>
             </div>
 
@@ -95,8 +105,9 @@ const Navbar = ({ user, currentTab, setCurrentTab, onLogout }) => {
 
           </div>
         ) : (
-          <div className="text-sm text-brand-500 italic">
-            Empieza a aprender hoy 🇪🇸
+          <div className="flex items-center gap-1.5 text-sm text-brand-500 italic font-medium">
+            <Languages size={16} className="text-accent-indigo" />
+            <span>Empieza a aprender hoy</span>
           </div>
         )}
 

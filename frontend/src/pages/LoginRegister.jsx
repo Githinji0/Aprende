@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Mail, Lock, User, ArrowRight, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, User, ArrowRight, Eye, EyeOff, Languages, AlertCircle } from 'lucide-react';
 
 const LoginRegister = ({ onAuthSuccess }) => {
   const [isLogin, setIsLogin] = useState(true);
@@ -59,16 +59,16 @@ const LoginRegister = ({ onAuthSuccess }) => {
       <div className="w-full max-w-md glass-card rounded-3xl shadow-2xl p-8 border border-white/40 flex flex-col gap-6 animate-fade-in relative overflow-hidden">
         
         {/* Decorative background gradients */}
-        <div className="absolute -top-12 -right-12 w-36 h-36 bg-accent-teal/10 rounded-full blur-2xl pointer-events-none"></div>
+        <div className="absolute -top-12 -right-12 w-36 h-36 bg-accent-violet/10 rounded-full blur-2xl pointer-events-none"></div>
         <div className="absolute -bottom-12 -left-12 w-36 h-36 bg-accent-indigo/10 rounded-full blur-2xl pointer-events-none"></div>
 
         {/* Header */}
         <div className="text-center">
-          <div className="inline-block bg-gradient-to-tr from-accent-indigo to-accent-teal p-3.5 rounded-2xl text-white shadow-lg shadow-indigo-150 mb-3">
-            <span className="text-3xl">🇪🇸</span>
+          <div className="inline-block mb-3 select-none">
+            <img src="/logo.png" alt="Aprende Logo" className="w-16 h-16 object-contain mx-auto" />
           </div>
           <h2 className="text-2xl font-extrabold text-brand-900 tracking-tight">
-            {isLogin ? '¡Bienvenido de nuevo!' : 'Crea tu cuenta'}
+            {isLogin ? 'Welcome Back!' : 'Create your account'}
           </h2>
           <p className="text-sm text-brand-500 mt-1">
             {isLogin 
@@ -81,7 +81,7 @@ const LoginRegister = ({ onAuthSuccess }) => {
         {/* Error Alert */}
         {error && (
           <div className="bg-red-50 text-red-600 text-sm px-4 py-3 rounded-2xl border border-red-100 flex items-center gap-2">
-            <span className="font-semibold">⚠️</span>
+            <AlertCircle size={16} className="shrink-0 text-red-500" />
             <span>{error}</span>
           </div>
         )}
@@ -121,7 +121,7 @@ const LoginRegister = ({ onAuthSuccess }) => {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="juan@ejemplo.com"
+                placeholder="juan@example.com"
                 className="w-full pl-11 pr-4 py-3 bg-brand-100/50 hover:bg-brand-100/80 focus:bg-white border border-brand-200 focus:border-accent-indigo rounded-2xl transition-all duration-200 text-brand-900 placeholder-brand-400 text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-100"
               />
             </div>
