@@ -63,6 +63,29 @@ export const getLevenshteinDistance = (a, b) => {
 };
 
 /**
+ * Checks if a clean input matches a clean key that may contain bracketed placeholders like [Your Name]
+ * @param {string} cleanInput
+ * @param {string} cleanKey
+ * @returns {boolean}
+ */
+export const matchWithPlaceholders = (cleanInput, cleanKey) => {
+  if (cleanKey.includes('[') && cleanKey.includes(']')) {
+    try {
+      // Escape special regex characters except square brackets
+      const escapedKey = cleanKey.replace(/[-\/\\^$*+?.()|{}]/g, '\\$&');
+      // Replace [anything] placeholders with a wildcard regex capture group (.+)
+      const regexStr = '^' + escapedKey.replace(/\[.*?\]/g, '(.+)') + '$';
+      const regex = new RegExp(regexStr);
+      return regex.test(cleanInput);
+    } catch (e) {
+      console.error("Error matching placeholders:", e);
+      return false;
+    }
+  }
+  return cleanInput === cleanKey;
+};
+
+/**
  * Assesses the user's answer spelling against the key
  * @param {string} userInput
  * @param {string} answerKey
@@ -72,8 +95,8 @@ export const checkSpelling = (userInput, answerKey) => {
   const cleanInput = userInput.trim().toLowerCase();
   const cleanKey = answerKey.trim().toLowerCase();
 
-  // 1. Exact Match (Case-insensitive)
-  if (cleanInput === cleanKey) {
+  // 1. Exact Match (Case-insensitive) / Placeholder Match
+  if (cleanInput === cleanKey || matchWithPlaceholders(cleanInput, cleanKey)) {
     return {
       success: true,
       partial: false,
@@ -86,7 +109,7 @@ export const checkSpelling = (userInput, answerKey) => {
   const noPunctInput = removePunctuation(cleanInput);
   const noPunctKey = removePunctuation(cleanKey);
 
-  if (noPunctInput === noPunctKey) {
+  if (noPunctInput === noPunctKey || matchWithPlaceholders(noPunctInput, noPunctKey)) {
     return {
       success: true,
       partial: true,
@@ -99,7 +122,7 @@ export const checkSpelling = (userInput, answerKey) => {
   const unaccentedInput = stripAccents(noPunctInput);
   const unaccentedKey = stripAccents(noPunctKey);
 
-  if (unaccentedInput === unaccentedKey) {
+  if (unaccentedInput === unaccentedKey || matchWithPlaceholders(unaccentedInput, unaccentedKey)) {
     return {
       success: true,
       partial: true,

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Play, Lock, CheckCircle2, Flame, Award, AlertTriangle, ChevronDown, ChevronUp, Mic, Trophy, Shield, BookOpen, Languages } from 'lucide-react';
+import { PixelCTAButton } from '../components/PixelCTAButton';
 
 const getChapterIcon = (chapter) => {
   const hasCheckpoint = chapter.lessons.some(l => l.lessonType === 'checkpoint');
@@ -44,7 +45,7 @@ const getChapterCardStyle = (chapter, isCompleted, isUnlocked) => {
   // Unlocked & In Progress (Active / Current Chapter)
   // White background, yellow/gold (accent-violet) border!
   return {
-    bg: 'bg-white text-brand-900 shadow-xl border-[3px] border-accent-violet',
+    bg: 'bg-white text-brand-900 shadow-xl border-[3px] border-accent-violet animate-snakelight',
     pointerOdd: 'border-l-accent-violet',
     pointerEven: 'border-r-accent-violet',
     badgeBg: 'bg-white border border-accent-violet',
@@ -318,13 +319,22 @@ const Dashboard = ({ user, onStartLesson, token, searchQuery }) => {
     <div className="max-w-6xl mx-auto px-4 py-4 flex flex-col gap-8 animate-fade-in">
       
       {/* 1. WELCOME BANNER & STREAK OVERVIEW */}
-      <div className="flex flex-col gap-2">
-        <h1 className="text-3xl font-black text-brand-900 tracking-tight">
-          Hello, {user.username}! 👋
-        </h1>
-        <p className="text-brand-500 text-sm font-semibold">
-          Keep learning! Complete lessons to maintain your streak.
-        </p>
+      <div className="glass-card p-6 md:p-8 rounded-3xl border border-white/40 shadow-md flex flex-col md:flex-row items-center justify-between gap-6 bg-white/70 overflow-hidden relative">
+        <div className="flex flex-col gap-2">
+          <h1 className="text-4xl md:text-5xl font-black text-espana-charcoal tracking-tight">
+            Hello, {user.username}! <span className="animate-wave">👋</span>
+          </h1>
+          <p className="text-brand-500 text-sm font-semibold">
+            Keep learning! Complete lessons to maintain your streak.
+          </p>
+        </div>
+        <div className="w-24 h-40 md:w-28 md:h-48 shrink-0 relative flex items-center justify-center -mb-6 md:-mb-8 -mt-6 overflow-hidden select-none">
+          <img 
+            src="/welcome_mascot.png" 
+            alt="Aprende Mascot" 
+            className="w-full h-full object-contain object-bottom" 
+          />
+        </div>
       </div>
 
       {/* 2. STATS & WEEKLY GOALS SECTION */}
@@ -349,10 +359,10 @@ const Dashboard = ({ user, onStartLesson, token, searchQuery }) => {
               <div key={d.name} className="flex flex-col items-center gap-1.5">
                 <span className="text-[10px] font-extrabold text-brand-400 uppercase tracking-widest">{d.label}</span>
                 <div 
-                  className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-black shadow-sm transition-all duration-200 border ${
+                  className={`w-9 h-9 rounded-full flex items-center justify-center text-xs font-black transition-all duration-200 ${
                     d.checked 
-                      ? 'bg-accent-indigo border-indigo-500 text-white' 
-                      : 'bg-brand-50 border-brand-200 text-brand-400'
+                      ? 'text-emerald-600 bg-emerald-500/15 border border-emerald-500/35 shadow-inner backdrop-blur-sm' 
+                      : 'text-brand-400 bg-white/30 border border-white/45 shadow-sm backdrop-blur-sm'
                   }`}
                   title={d.name}
                 >
@@ -385,7 +395,7 @@ const Dashboard = ({ user, onStartLesson, token, searchQuery }) => {
           {/* Card Left: Premium Spain flag banner */}
           <div 
             className="w-full md:w-2/5 relative min-h-[160px] md:min-h-auto p-8 flex flex-col justify-between overflow-hidden shrink-0 select-none bg-cover bg-center"
-            style={{ backgroundImage: `url('/spain_flag.png')` }}
+            style={{ backgroundImage: `url('/spain_flag.png?v=2')` }}
           >
             {/* Dark overlay to ensure text readability */}
             <div className="absolute inset-0 bg-black/35 pointer-events-none"></div>
@@ -441,18 +451,18 @@ const Dashboard = ({ user, onStartLesson, token, searchQuery }) => {
                 onClick={() => {
                   document.getElementById('roadmap-timeline')?.scrollIntoView({ behavior: 'smooth' });
                 }}
-                className="px-5 py-3 border border-brand-300 hover:border-brand-400 text-brand-700 hover:text-brand-900 rounded-2xl text-xs font-black transition-all duration-200 flex items-center gap-1 bg-white hover:bg-brand-50 active:scale-[0.98]"
+                className="px-5 py-3 text-brand-700 hover:text-brand-900 rounded-2xl text-xs font-black flex items-center gap-1 glass-button focus:outline-none"
               >
                 <span>View Curriculum</span>
                 <span>↓</span>
               </button>
 
-              <button
+              <PixelCTAButton
                 onClick={() => onStartLesson(activeData.lesson._id)}
-                className="px-6 py-3 bg-accent-indigo hover:bg-indigo-600 text-white rounded-2xl text-xs font-black shadow-md shadow-indigo-100 transition-all duration-200 transform active:scale-[0.97]"
+                className="px-6 py-3 text-white rounded-2xl text-xs font-black glass-red-button animate-snakelight"
               >
                 Continue Lesson
-              </button>
+              </PixelCTAButton>
             </div>
           </div>
         </div>
@@ -636,7 +646,11 @@ const Dashboard = ({ user, onStartLesson, token, searchQuery }) => {
                                       {isLCompleted ? 'Review' : 'Start'}
                                     </button>
                                   ) : (
-                                    <div className="p-1.5 rounded-lg bg-white/5 text-white/30 border border-white/5">
+                                    <div className={`p-1.5 rounded-lg border ${
+                                      isCompleted 
+                                        ? 'bg-white/10 text-white/40 border-white/10' 
+                                        : 'bg-brand-100/50 text-brand-400 border-brand-200/50'
+                                    }`}>
                                       <Lock size={12} />
                                     </div>
                                   )}
@@ -833,7 +847,11 @@ const Dashboard = ({ user, onStartLesson, token, searchQuery }) => {
                                       {isLCompleted ? 'Review' : 'Start'}
                                     </button>
                                   ) : (
-                                    <div className="p-1.5 rounded-lg bg-white/5 text-white/30 border border-white/5">
+                                    <div className={`p-1.5 rounded-lg border ${
+                                      isCompleted 
+                                        ? 'bg-white/10 text-white/40 border-white/10' 
+                                        : 'bg-brand-100/50 text-brand-400 border-brand-200/50'
+                                    }`}>
                                       <Lock size={10} />
                                     </div>
                                   )}

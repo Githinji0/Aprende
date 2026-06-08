@@ -4,6 +4,7 @@ import VocabMatchmaker from './games/VocabMatchmaker';
 import AgreementBuilder from './games/AgreementBuilder';
 import CuentaCafeteria from './games/CuentaCafeteria';
 import Hangman from './games/Hangman';
+import { PixelCTAButton } from '../components/PixelCTAButton';
 
 const GAMES_LIST = [
   {
@@ -61,7 +62,7 @@ const GamesHub = ({ user, token, onXpGain }) => {
       {/* Sessions Points Header bar */}
       <div className="max-w-4xl mx-auto flex justify-between items-center bg-white border border-brand-200 rounded-3xl p-5 shadow-sm mb-8">
         <div className="flex items-center gap-3">
-          <div className="bg-gradient-to-tr from-espana-red to-espana-gold p-2.5 rounded-2xl text-white shadow-md">
+          <div className="bg-espana-red p-2.5 rounded-2xl text-white shadow-md">
             <Gamepad2 size={24} />
           </div>
           <div>
@@ -105,7 +106,7 @@ const GamesHub = ({ user, token, onXpGain }) => {
                 return (
                   <div 
                     key={game.id} 
-                    className="bg-white hover:bg-brand-50 border border-brand-200 hover:border-brand-350 p-6 rounded-[2.2rem] flex flex-col justify-between gap-5 transition-all duration-300 shadow-sm hover:shadow-md group"
+                    className="glass-card hover:bg-white/85 border border-white/50 hover:border-white/80 p-6 rounded-[2.2rem] flex flex-col justify-between gap-5 transition-all duration-300 shadow-sm hover:shadow-md group"
                   >
                     <div className="flex flex-col gap-3.5">
                       <div className="flex justify-between items-center">
@@ -123,13 +124,13 @@ const GamesHub = ({ user, token, onXpGain }) => {
                       </div>
                     </div>
 
-                    <button
+                    <PixelCTAButton
                       onClick={() => setActiveGame(game.id)}
-                      className="w-full bg-espana-red hover:bg-red-700 text-white font-extrabold py-3 rounded-2xl text-xs flex items-center justify-center gap-1.5 shadow-md shadow-red-50 transition-all active:scale-[0.98] outline-none"
+                      className="w-full glass-red-button py-3 text-xs font-extrabold flex items-center justify-center gap-1.5 outline-none"
                     >
                       <span>Play Now</span>
                       <ArrowRight size={13} />
-                    </button>
+                    </PixelCTAButton>
                   </div>
                 );
               })}
@@ -138,7 +139,7 @@ const GamesHub = ({ user, token, onXpGain }) => {
           </div>
         ) : (
           /* Render selected active game child */
-          <div className="bg-white border border-brand-200 p-6 sm:p-8 rounded-[2.2rem] shadow-sm animate-fade-in min-h-[350px]">
+          <div className="glass-card border border-white/40 p-6 sm:p-8 rounded-[2.2rem] shadow-sm animate-fade-in min-h-[350px]">
             {activeGame === 'matchmaker' && (
               <VocabMatchmaker onBack={handleBackToHub} onGameComplete={handleGameComplete} />
             )}

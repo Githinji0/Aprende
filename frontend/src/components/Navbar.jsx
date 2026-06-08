@@ -12,7 +12,7 @@ const Navbar = ({ user, currentTab, setCurrentTab, onLogout }) => {
           onClick={() => user && setCurrentTab('dashboard')}
         >
           <img src="/logo.png" alt="Aprende Logo" className="w-8 h-8 object-contain" />
-          <span className="text-xl font-bold bg-gradient-to-r from-accent-indigo to-accent-violet bg-clip-text text-transparent">
+          <span className="text-xl font-bold text-espana-red">
             Aprende
           </span>
         </div>

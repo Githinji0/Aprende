@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Volume2, CheckCircle2, XCircle, ArrowLeft, ArrowRight, Sparkles, RefreshCw, HelpCircle } from 'lucide-react';
+import { speak } from '../../utils/speechEngine';
 
 const RECEIPT_ROUNDS = [
   {
@@ -57,23 +58,17 @@ const CuentaCafeteria = ({ onBack, onGameComplete }) => {
   };
 
   const handleSpeak = () => {
-    if (!window.speechSynthesis) {
+    if (!('speechSynthesis' in window)) {
       alert('Speech Synthesis not supported in this browser. Please use the text clue fallback.');
       return;
     }
 
-    // Stop any current voice queues
-    window.speechSynthesis.cancel();
-
-    const utterance = new SpeechSynthesisUtterance(currentRound.spokenClue);
-    utterance.lang = 'es-ES';
-    utterance.rate = 0.85;
-
-    utterance.onstart = () => setIsSpoken(true);
-    utterance.onend = () => setIsSpoken(false);
-    utterance.onerror = () => setIsSpoken(false);
-
-    window.speechSynthesis.speak(utterance);
+    setIsSpoken(true);
+    speak(currentRound.spokenClue, {
+      onStart: () => setIsSpoken(true),
+      onEnd: () => setIsSpoken(false),
+      onError: () => setIsSpoken(false),
+    });
   };
 
   const handleCheck = (e) => {
@@ -239,7 +234,7 @@ const CuentaCafeteria = ({ onBack, onGameComplete }) => {
                 <button
                   type="submit"
                   disabled={!userInput.trim()}
-                  className="w-full bg-espana-red hover:bg-red-700 text-white font-extrabold py-4 rounded-2xl text-xs shadow-md shadow-red-100 transition-all disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98]"
+                  className="w-full glass-red-button py-4 text-xs font-extrabold disabled:opacity-50 disabled:pointer-events-none"
                 >
                   Verify Amount
                 </button>
@@ -247,7 +242,7 @@ const CuentaCafeteria = ({ onBack, onGameComplete }) => {
                 <button
                   type="button"
                   onClick={handleNextRound}
-                  className="w-full bg-espana-gold hover:opacity-95 text-slate-900 font-extrabold py-4 rounded-2xl flex items-center justify-center gap-2 text-xs shadow-md"
+                  className="w-full glass-emerald-button py-4 text-xs font-extrabold flex items-center justify-center gap-2 shadow-md"
                 >
                   <span>Next Receipt</span>
                   <ArrowRight size={14} />
@@ -271,7 +266,7 @@ const CuentaCafeteria = ({ onBack, onGameComplete }) => {
             </p>
           </div>
 
-          <div className="bg-brand-50/80 px-6 py-4 rounded-2xl border border-brand-250 flex items-center gap-4">
+          <div className="bg-brand-50/80 px-6 py-4 rounded-2xl border border-brand-200 flex items-center gap-4">
             <div className="flex flex-col text-left">
               <span className="text-[10px] font-black text-brand-400 uppercase tracking-wider">Total Reward</span>
               <span className="text-base font-black text-espana-charcoal mt-0.5">+150 XP</span>
@@ -286,13 +281,13 @@ const CuentaCafeteria = ({ onBack, onGameComplete }) => {
           <div className="flex gap-3 w-full max-w-sm mt-2">
             <button
               onClick={() => initializeRound(0)}
-              className="flex-1 px-4 py-3.5 border border-brand-300 text-brand-600 rounded-2xl text-xs font-extrabold hover:bg-brand-50 bg-white transition-colors active:scale-95"
+              className="flex-1 glass-button py-3 text-xs font-extrabold"
             >
               Play Again
             </button>
             <button
               onClick={onBack}
-              className="flex-1 px-4 py-3.5 bg-espana-red hover:bg-red-700 text-white rounded-2xl text-xs font-extrabold shadow-md shadow-red-100 transition-all active:scale-95"
+              className="flex-1 glass-red-button py-3 text-xs font-extrabold"
             >
               Back to Games
             </button>

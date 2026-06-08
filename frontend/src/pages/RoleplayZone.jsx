@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Send, Volume2, Globe, Eye, EyeOff, RotateCcw, AlertCircle, ChevronDown, Utensils, Hotel, ShoppingBag } from 'lucide-react';
 import AudioSpeaker from '../components/AudioSpeaker';
+import { ChatBubble, TypingBubble, parseBoldText, THEMES } from '../components/ChatSequence';
 
 const getScenarioCharacter = (scenarioKey) => {
   if (scenarioKey === 'receptionist') {
@@ -53,6 +54,7 @@ const RoleplayZone = ({ token }) => {
   const [userInput, setUserInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [chatTheme, setChatTheme] = useState('Espana');
   const chatEndRef = useRef(null);
   const dropdownRef = useRef(null);
 
@@ -216,7 +218,7 @@ const RoleplayZone = ({ token }) => {
             <button
               type="button"
               onClick={() => setDropdownOpen(!dropdownOpen)}
-              className="flex items-center gap-2.5 px-4.5 py-3 bg-brand-100 hover:bg-brand-200 border border-brand-300 rounded-2xl text-sm font-bold text-brand-850 outline-none focus:border-accent-indigo transition-all duration-200 shadow-sm"
+              className="flex items-center gap-2.5 px-5 py-3 bg-brand-100 hover:bg-brand-200 border border-brand-300 rounded-2xl text-sm font-bold text-brand-850 outline-none focus:border-accent-indigo transition-all duration-200 shadow-sm"
             >
               {(() => {
                 const active = scenarios.find(s => s.value === scenario);
@@ -281,6 +283,35 @@ const RoleplayZone = ({ token }) => {
       {/* Chat Messages Panel */}
       <div className="glass-card flex-1 min-h-[420px] max-h-[500px] border border-white/40 rounded-3xl shadow-xl flex flex-col overflow-hidden bg-white/50">
         
+        {/* Chat Header / Theme Selector */}
+        <div className="px-6 py-3 border-b border-brand-200/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-brand-50/50">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span className="text-sm font-bold text-brand-800">
+              Conversación con {getScenarioCharacter(scenario).name}
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-black text-brand-400 uppercase tracking-wider">Chat Theme:</span>
+            <div className="flex bg-brand-100 p-0.5 rounded-xl border border-brand-200/80 shadow-inner">
+              {Object.keys(THEMES).map((themeKey) => (
+                <button
+                  key={themeKey}
+                  type="button"
+                  onClick={() => setChatTheme(themeKey)}
+                  className={`px-3 py-1 text-[10px] font-extrabold rounded-lg transition-all duration-200 ${
+                    chatTheme === themeKey
+                      ? 'bg-espana-red text-white shadow-sm'
+                      : 'text-brand-700 hover:text-brand-900 hover:bg-brand-50/50'
+                  }`}
+                >
+                  {themeKey === 'Espana' ? 'España' : themeKey}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
         {/* Chat log */}
         <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-4">
           
@@ -293,7 +324,7 @@ const RoleplayZone = ({ token }) => {
             return (
               <div
                 key={idx}
-                className={`flex items-start gap-3 max-w-[85%] md:max-w-[80%] ${
+                className={`flex items-start gap-3 w-full max-w-[85%] md:max-w-[80%] ${
                   isAi ? 'self-start flex-row' : 'self-end flex-row-reverse'
                 } animate-fade-in`}
               >
@@ -321,17 +352,13 @@ const RoleplayZone = ({ token }) => {
                 </div>
 
                 {/* Content block */}
-                <div className={`flex flex-col ${isAi ? 'items-start' : 'items-end'}`}>
+                <div className={`flex flex-col flex-1 min-w-0 ${isAi ? 'items-start' : 'items-end'}`}>
                   {/* Bubble Container */}
-                  <div className={`p-4 rounded-2xl flex flex-col gap-1.5 shadow-sm border ${
-                    isAi
-                      ? 'bg-white border-brand-200 text-brand-900 rounded-tl-none'
-                      : 'bg-accent-indigo border-indigo-500 text-white rounded-tr-none'
-                  }`}>
+                  <ChatBubble sender={!isAi} theme={chatTheme}>
                     
                     {/* Spoken Spanish Sentence */}
                     <span className="font-semibold text-sm leading-relaxed">
-                      {isAi ? parsed.spanish : msg.content}
+                      {isAi ? parseBoldText(parsed.spanish) : parseBoldText(msg.content)}
                     </span>
 
                     {/* AI Translation section */}
@@ -339,13 +366,18 @@ const RoleplayZone = ({ token }) => {
                       <div className="flex flex-col gap-1 border-t border-brand-200/50 pt-1.5 mt-0.5">
                         {msg.showTranslation ? (
                           <p className="text-xs text-brand-500 font-medium italic animate-fade-in">
-                            {parsed.english}
+                            {parseBoldText(parsed.english)}
                           </p>
                         ) : null}
 
                         <button
                           onClick={() => toggleTranslation(idx)}
-                          className="text-[10px] text-accent-indigo hover:text-accent-violet font-extrabold flex items-center gap-1 mt-1 focus:outline-none"
+                          className={`text-[10px] font-extrabold flex items-center gap-1 mt-1 focus:outline-none ${
+                            chatTheme === 'Espana' ? 'text-accent-indigo hover:text-accent-violet' :
+                            chatTheme === 'WhatsApp' ? 'text-emerald-600 hover:text-emerald-800' :
+                            chatTheme === 'iMessage' ? 'text-blue-600 hover:text-blue-800' :
+                            'text-sky-500 hover:text-sky-700'
+                          }`}
                         >
                           {msg.showTranslation ? (
                             <>
@@ -362,7 +394,7 @@ const RoleplayZone = ({ token }) => {
                       </div>
                     )}
 
-                  </div>
+                  </ChatBubble>
 
                   {/* Bubble Footer tools (TTS for AI message) */}
                   {isAi && (
@@ -403,14 +435,7 @@ const RoleplayZone = ({ token }) => {
               </div>
 
               {/* Typing Bubble */}
-              <div className="p-4 rounded-2xl bg-white border border-brand-200 text-brand-900 rounded-tl-none flex items-center gap-1.5 shadow-sm">
-                <span className="text-xs text-brand-400 font-bold">Typing</span>
-                <span className="flex gap-1">
-                  <span className="w-1.5 h-1.5 bg-brand-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-                  <span className="w-1.5 h-1.5 bg-brand-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-                  <span className="w-1.5 h-1.5 bg-brand-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
-                </span>
-              </div>
+              <TypingBubble theme={chatTheme} />
             </div>
           )}
 

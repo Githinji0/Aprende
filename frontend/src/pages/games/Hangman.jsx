@@ -212,7 +212,7 @@ const Hangman = ({ onBack, onGameComplete }) => {
                     className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl border font-extrabold text-sm uppercase transition-all duration-150 outline-none flex items-center justify-center ${
                       isUsed 
                         ? 'bg-brand-100 text-brand-300 border-brand-200 cursor-not-allowed' 
-                        : 'bg-white hover:bg-brand-50 border-brand-250 text-espana-charcoal hover:border-espana-red hover:text-espana-red shadow-sm active:scale-90'
+                        : 'bg-white hover:bg-brand-50 border-brand-200 text-espana-charcoal hover:border-espana-red hover:text-espana-red shadow-sm active:scale-90'
                     }`}
                   >
                     {letter}
@@ -240,7 +240,7 @@ const Hangman = ({ onBack, onGameComplete }) => {
             </p>
           </div>
 
-          <div className="bg-brand-50/80 px-6 py-4 rounded-2xl border border-brand-250 flex items-center gap-4">
+          <div className="bg-brand-50/80 px-6 py-4 rounded-2xl border border-brand-200 flex items-center gap-4">
             <div className="flex flex-col text-left">
               <span className="text-[10px] font-black text-brand-400 uppercase tracking-wider">Score Earned</span>
               <span className="text-base font-black text-espana-charcoal mt-0.5">+150 XP</span>
@@ -255,13 +255,13 @@ const Hangman = ({ onBack, onGameComplete }) => {
           <div className="flex gap-3 w-full max-w-sm mt-2">
             <button
               onClick={startNewGame}
-              className="flex-1 px-4 py-3.5 border border-brand-300 text-brand-600 rounded-2xl text-xs font-extrabold hover:bg-brand-50 bg-white transition-colors active:scale-95"
+              className="flex-1 glass-button py-3 text-xs font-extrabold"
             >
               Play Again
             </button>
             <button
               onClick={onBack}
-              className="flex-1 px-4 py-3.5 bg-espana-red hover:bg-red-700 text-white rounded-2xl text-xs font-extrabold shadow-md shadow-red-100 transition-all active:scale-95"
+              className="flex-1 glass-red-button py-3 text-xs font-extrabold"
             >
               Back to Games
             </button>
@@ -288,13 +288,13 @@ const Hangman = ({ onBack, onGameComplete }) => {
           <div className="flex gap-3 w-full max-w-sm mt-4">
             <button
               onClick={startNewGame}
-              className="flex-1 px-4 py-3.5 border border-brand-300 text-brand-600 rounded-2xl text-xs font-extrabold hover:bg-brand-50 bg-white transition-colors active:scale-95"
+              className="flex-1 glass-button py-3 text-xs font-extrabold"
             >
               Try Again
             </button>
             <button
               onClick={onBack}
-              className="flex-1 px-4 py-3.5 bg-espana-red hover:bg-red-700 text-white rounded-2xl text-xs font-extrabold shadow-md shadow-red-100 transition-all active:scale-95"
+              className="flex-1 glass-red-button py-3 text-xs font-extrabold"
             >
               Back to Games
             </button>

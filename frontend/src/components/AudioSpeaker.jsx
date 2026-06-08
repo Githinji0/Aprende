@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Volume2, VolumeX } from 'lucide-react';
 import { speak } from '../utils/speechEngine';
 
-const AudioSpeaker = ({ text, lang = 'es-MX', size = 20, className = '' }) => {
+const AudioSpeaker = ({ text, lang, size = 20, className = '' }) => {
   const [isPlaying, setIsPlaying] = useState(false);
 
   const handleSpeak = (e) => {
@@ -10,7 +10,7 @@ const AudioSpeaker = ({ text, lang = 'es-MX', size = 20, className = '' }) => {
     
     setIsPlaying(true);
     speak(text, {
-      lang,
+      lang: lang || undefined,
       onEnd: () => setIsPlaying(false),
       onError: () => setIsPlaying(false),
     });

@@ -60,4 +60,238 @@ body {
 .animate-shake {
   animation: shake 300ms ease-in-out;
 }
-/* Force Tailwind config build reload */
+
+/* Glowing snakelight border animation */
+@keyframes snakelight {
+  0%, 100% {
+    border-color: #D01C1F; /* España Red */
+    box-shadow: 0 0 6px rgba(208, 28, 31, 0.4);
+  }
+  50% {
+    border-color: #FFC400; /* España Gold */
+    box-shadow: 0 0 10px rgba(255, 196, 0, 0.6);
+  }
+}
+
+.animate-snakelight {
+  animation: snakelight 2.5s ease-in-out infinite;
+}
+
+/* Core Neumorphism Styles (Light Sand background #F7F4EB) */
+.neumorphic-flat {
+  background: #F7F4EB;
+  box-shadow: 6px 6px 12px rgba(163, 153, 128, 0.25), 
+              -6px -6px 12px rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.neumorphic-inset {
+  background: #F7F4EB;
+  box-shadow: inset 4px 4px 8px rgba(163, 153, 128, 0.25), 
+              inset -4px -4px 8px rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.neumorphic-button {
+  background: #F7F4EB;
+  box-shadow: 4px 4px 8px rgba(163, 153, 128, 0.22), 
+              -4px -4px 8px rgba(255, 255, 255, 0.95);
+  border-radius: 14px;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.neumorphic-button:hover {
+  box-shadow: 2px 2px 5px rgba(163, 153, 128, 0.22), 
+              -2px -2px 5px rgba(255, 255, 255, 0.95);
+  transform: translateY(1px);
+}
+
+.neumorphic-button:active {
+  box-shadow: inset 3px 3px 6px rgba(163, 153, 128, 0.22), 
+              inset -3px -3px 6px rgba(255, 255, 255, 0.95);
+  transform: translateY(2px);
+}
+
+.neumorphic-red-button {
+  background: #D01C1F;
+  color: white;
+  box-shadow: 4px 4px 8px rgba(130, 10, 12, 0.45), 
+              -4px -4px 8px rgba(255, 100, 103, 0.35);
+  border-radius: 14px;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.neumorphic-red-button:hover {
+  box-shadow: 2px 2px 5px rgba(130, 10, 12, 0.45), 
+              -2px -2px 5px rgba(255, 100, 103, 0.35);
+  transform: translateY(1px);
+}
+
+.neumorphic-red-button:active {
+  box-shadow: inset 3px 3px 6px rgba(130, 10, 12, 0.5), 
+              inset -3px -3px 6px rgba(255, 100, 103, 0.4);
+  transform: translateY(2px);
+}
+
+.neumorphic-emerald-button {
+  background: #059669;
+  color: white;
+  box-shadow: 4px 4px 8px rgba(2, 70, 48, 0.35), 
+              -4px -4px 8px rgba(52, 211, 153, 0.35);
+  border-radius: 14px;
+  transition: all 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.neumorphic-emerald-button:hover {
+  box-shadow: 2px 2px 5px rgba(2, 70, 48, 0.35), 
+              -2px -2px 5px rgba(52, 211, 153, 0.35);
+  transform: translateY(1px);
+}
+
+.neumorphic-emerald-button:active {
+  box-shadow: inset 3px 3px 6px rgba(2, 70, 48, 0.45), 
+              inset -3px -3px 6px rgba(52, 211, 153, 0.4);
+  transform: translateY(2px);
+}
+
+/* Chat sequence entry pop and typing indicator pulse */
+@keyframes bubblePop {
+  0% {
+    opacity: 0;
+    transform: scale(0.92) translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-bubble-pop {
+  animation: bubblePop 280ms cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+
+@keyframes dotPulse {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+.animate-dot-pulse {
+  animation: dotPulse 1.2s infinite ease-in-out;
+}
+
+/* Glassmorphic Buttons & Material Textures */
+.glass-button {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: #1E293B;
+  box-shadow: 0 4px 15px rgba(163, 153, 128, 0.08);
+  border-radius: 16px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.75);
+  border-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 6px 20px rgba(163, 153, 128, 0.12);
+  transform: translateY(-1px);
+}
+
+.glass-button:active:not(:disabled) {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(1px);
+}
+
+.glass-red-button {
+  background: rgba(208, 28, 31, 0.82);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: white;
+  box-shadow: 0 4px 15px rgba(208, 28, 31, 0.2);
+  border-radius: 16px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-red-button:hover:not(:disabled) {
+  background: rgba(208, 28, 31, 0.95);
+  box-shadow: 0 6px 20px rgba(208, 28, 31, 0.3);
+  transform: translateY(-1px);
+}
+
+.glass-red-button:active:not(:disabled) {
+  background: rgba(178, 19, 22, 0.9);
+  transform: translateY(1px);
+}
+
+.glass-emerald-button {
+  background: rgba(5, 150, 105, 0.82);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: white;
+  box-shadow: 0 4px 15px rgba(5, 150, 105, 0.2);
+  border-radius: 16px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-emerald-button:hover:not(:disabled) {
+  background: rgba(5, 150, 105, 0.95);
+  box-shadow: 0 6px 20px rgba(5, 150, 105, 0.3);
+  transform: translateY(-1px);
+}
+
+.glass-emerald-button:active:not(:disabled) {
+  background: rgba(4, 120, 87, 0.9);
+  transform: translateY(1px);
+}
+
+/* Glassmorphic input field style */
+.glass-input {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: #1E293B;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-input:focus {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: rgba(208, 28, 31, 0.5); /* España Red focus */
+  box-shadow: 0 0 0 3px rgba(208, 28, 31, 0.15), inset 0 2px 4px rgba(0, 0, 0, 0.03);
+}
+
+/* Waving hand animation keyframes and utility */
+@keyframes wave-hand {
+  0% { transform: rotate( 0.0deg) }
+  10% { transform: rotate(14.0deg) }
+  20% { transform: rotate(-8.0deg) }
+  30% { transform: rotate(14.0deg) }
+  40% { transform: rotate(-4.0deg) }
+  50% { transform: rotate(10.0deg) }
+  60% { transform: rotate( 0.0deg) }
+  100% { transform: rotate( 0.0deg) }
+}
+
+.animate-wave {
+  animation: wave-hand 2.2s infinite;
+  transform-origin: 70% 70%;
+  display: inline-block;
+}
+
+
+

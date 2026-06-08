@@ -2,6 +2,22 @@
  * Browser Speech API Wrapper for Spanish Learning App
  */
 
+// Cache of voices to handle asynchronous browser loading
+let cachedVoices = [];
+
+const loadVoices = () => {
+  if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+    cachedVoices = window.speechSynthesis.getVoices();
+  }
+};
+
+if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+  loadVoices();
+  if (window.speechSynthesis.onvoiceschanged !== undefined) {
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+  }
+}
+
 // --- TEXT TO SPEECH (TTS) ---
 
 /**
@@ -24,15 +40,36 @@ export const speak = (text, options = {}) => {
   utterance.rate = options.rate || 0.85; // Slightly slower for language learners
   utterance.pitch = options.pitch || 1.0;
 
-  // Set Spanish locale
-  const lang = options.lang || 'es-MX'; // default to Mexican Spanish
+  // Retrieve preferred voice accent from local storage, fallback to es-ES
+  const preferredLang = typeof window !== 'undefined' ? (localStorage.getItem('voiceAccent') || 'es-ES') : 'es-ES';
+  const lang = options.lang || preferredLang;
   utterance.lang = lang;
 
-  // Try to find a high-quality native voice matching the language code
-  const voices = window.speechSynthesis.getVoices();
-  const matchingVoice = voices.find(
-    (voice) => voice.lang.startsWith(lang) || voice.lang.startsWith('es')
+  // Get current voices (refresh cache if empty)
+  let voices = window.speechSynthesis.getVoices();
+  if (voices.length === 0) {
+    voices = cachedVoices;
+  }
+
+  // Tiered match selection:
+  // 1. Exact match case-insensitive (e.g. es-ES, es-MX)
+  let matchingVoice = voices.find(
+    (voice) => voice.lang.toLowerCase() === lang.toLowerCase()
   );
+
+  // 2. Starts with specific language code (e.g. es-ES, es-MX)
+  if (!matchingVoice) {
+    matchingVoice = voices.find(
+      (voice) => voice.lang.toLowerCase().startsWith(lang.toLowerCase())
+    );
+  }
+
+  // 3. Any Spanish voice fallback
+  if (!matchingVoice) {
+    matchingVoice = voices.find(
+      (voice) => voice.lang.toLowerCase().startsWith('es')
+    );
+  }
 
   if (matchingVoice) {
     utterance.voice = matchingVoice;
@@ -71,8 +108,11 @@ export const getSpeechRecognizer = (config = {}) => {
 
   const recognition = new SpeechRecognition();
   
+  // Retrieve preferred voice accent from local storage, fallback to es-ES
+  const preferredLang = typeof window !== 'undefined' ? (localStorage.getItem('voiceAccent') || 'es-ES') : 'es-ES';
+  
   // Configure
-  recognition.lang = config.lang || 'es-MX';
+  recognition.lang = config.lang || preferredLang;
   recognition.interimResults = false;
   recognition.maxAlternatives = 1;
   recognition.continuous = false;

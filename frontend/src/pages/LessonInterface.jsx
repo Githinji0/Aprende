@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { ArrowLeft, BookOpen, Volume2, Mic, CheckCircle, AlertCircle, XCircle, ArrowRight, Award, Flame, Keyboard, Trophy, Sparkles } from 'lucide-react';
 import AudioSpeaker from '../components/AudioSpeaker';
 import MicListener from '../components/MicListener';
-import { checkSpelling, stripAccents } from '../utils/stringMetrics';
+import { checkSpelling, stripAccents, matchWithPlaceholders } from '../utils/stringMetrics';
+import { PixelCTAButton } from '../components/PixelCTAButton';
 
 const LessonInterface = ({ lessonId, token, onBackToDashboard }) => {
   const [lesson, setLesson] = useState(null);
@@ -123,18 +124,20 @@ const LessonInterface = ({ lessonId, token, onBackToDashboard }) => {
 
     setAnswered(true);
 
-    if (cleanTranscript === cleanKey) {
+    if (cleanTranscript === cleanKey || matchWithPlaceholders(cleanTranscript, cleanKey)) {
       setIsCorrect(true);
       setWarningMessage('');
       setScorePoints(prev => prev + 100);
     } else {
       // Check if transcription contains key, or if it is close (e.g. distance of 1 or 2)
       // Allow partial credit if they said most of it correct
-      const wordCount = cleanKey.split(' ').length;
-      const keyWords = cleanKey.split(' ');
-      const matchingWords = keyWords.filter(word => cleanTranscript.includes(word));
-      
-      const matchRatio = matchingWords.length / wordCount;
+      const staticWords = cleanKey.replace(/\[.*?\]/g, '').split(/\s+/).filter(Boolean);
+      const wordCount = staticWords.length;
+      let matchRatio = 0;
+      if (wordCount > 0) {
+        const matchingWords = staticWords.filter(word => cleanTranscript.includes(word));
+        matchRatio = matchingWords.length / wordCount;
+      }
 
       if (matchRatio >= 0.7) {
         setIsCorrect(true);
@@ -349,18 +352,18 @@ const LessonInterface = ({ lessonId, token, onBackToDashboard }) => {
                 </div>
                 
                 {/* Audio TTS button */}
-                <AudioSpeaker text={vocab.spanish} lang="es-MX" size={20} />
+                <AudioSpeaker text={vocab.spanish} size={20} />
               </div>
             ))}
           </div>
 
-          <button
+          <PixelCTAButton
             onClick={() => setPhase('quiz')}
-            className="w-full bg-gradient-to-r from-accent-indigo to-accent-violet hover:opacity-95 text-white py-4 rounded-2xl font-extrabold shadow-lg shadow-indigo-150 flex items-center justify-center gap-2 transition-all duration-200 transform active:scale-[0.98] mt-2"
+            className="w-full glass-red-button py-4 text-xs font-black shadow-md flex items-center justify-center gap-2 transition-all mt-2 animate-snakelight"
           >
             <span>Start Practice Quiz</span>
             <ArrowRight size={18} />
-          </button>
+          </PixelCTAButton>
         </div>
       )}
 
@@ -385,7 +388,7 @@ const LessonInterface = ({ lessonId, token, onBackToDashboard }) => {
             </div>
             <div className="w-full h-3 bg-brand-200 rounded-full overflow-hidden">
               <div 
-                className="h-full bg-gradient-to-r from-accent-indigo to-accent-violet transition-all duration-300"
+                className="h-full bg-espana-red transition-all duration-300"
                 style={{ width: `${((currentQuizIndex + 1) / lesson.quizzes.length) * 100}%` }}
               ></div>
             </div>
@@ -451,7 +454,7 @@ const LessonInterface = ({ lessonId, token, onBackToDashboard }) => {
                   <button
                     onClick={evaluateSpelling}
                     disabled={!userSpellingInput.trim()}
-                    className="w-full bg-accent-indigo hover:bg-indigo-600 disabled:opacity-50 disabled:pointer-events-none text-white py-3.5 rounded-2xl font-bold transition-all duration-200"
+                    className="w-full glass-red-button py-3.5 text-xs font-black disabled:opacity-50 disabled:pointer-events-none transition-all shadow-md"
                   >
                     Submit Spelling Check
                   </button>
@@ -481,7 +484,7 @@ const LessonInterface = ({ lessonId, token, onBackToDashboard }) => {
                   <div className="flex flex-col items-center gap-4 w-full">
                     <MicListener 
                       onTranscript={evaluateSpeech} 
-                      lang="es-MX" 
+                      targetPhrase={currentQuiz.answerKey}
                     />
                     <button
                       type="button"
@@ -514,7 +517,7 @@ const LessonInterface = ({ lessonId, token, onBackToDashboard }) => {
                         type="button"
                         onClick={() => evaluateSpeech(userSpellingInput)}
                         disabled={!userSpellingInput.trim()}
-                        className="px-4 py-2.5 bg-accent-indigo text-white font-bold rounded-xl text-xs hover:bg-indigo-600 transition-colors shadow-sm shadow-indigo-100"
+                        className="px-4 py-2.5 glass-red-button text-xs font-black transition-all shadow-sm"
                       >
                         Submit Spelling
                       </button>
@@ -585,7 +588,7 @@ const LessonInterface = ({ lessonId, token, onBackToDashboard }) => {
 
                 <button
                   onClick={handleNextQuiz}
-                  className="mt-3 w-full bg-brand-900 hover:bg-brand-800 text-white font-bold py-3 rounded-2xl flex items-center justify-center gap-1.5 transition-all duration-200"
+                  className="mt-3 w-full glass-red-button py-3.5 text-xs font-black flex items-center justify-center gap-1.5 transition-all shadow-md"
                 >
                   <span>Continue</span>
                   <ArrowRight size={16} />
@@ -601,7 +604,7 @@ const LessonInterface = ({ lessonId, token, onBackToDashboard }) => {
       {quizFinished && (
         <div className="glass-card p-8 rounded-3xl border border-white/40 shadow-2xl text-center flex flex-col items-center gap-6 animate-fade-in">
           
-          <div className="bg-gradient-to-tr from-accent-indigo to-accent-violet p-5 rounded-full text-white shadow-xl shadow-indigo-100">
+          <div className="bg-espana-red p-5 rounded-full text-white shadow-xl shadow-red-100/30">
             <Award size={48} className="animate-bounce" />
           </div>
 
@@ -678,7 +681,7 @@ const LessonInterface = ({ lessonId, token, onBackToDashboard }) => {
                   streak: completionResult.streak,
                   lastActiveDate: completionResult.lastActiveDate
                 })}
-                className="w-full bg-gradient-to-r from-accent-emerald to-emerald-600 hover:opacity-95 text-white py-4 rounded-2xl font-extrabold shadow-lg shadow-emerald-150 transition-all duration-200"
+                className="w-full glass-emerald-button py-4 text-xs font-black transition-all shadow-md"
               >
                 Return to Dashboard
               </button>
@@ -690,7 +693,7 @@ const LessonInterface = ({ lessonId, token, onBackToDashboard }) => {
               </p>
               <button
                 onClick={() => onBackToDashboard(null)}
-                className="mt-4 px-6 py-3 bg-brand-900 text-white rounded-2xl font-bold"
+                className="mt-4 px-6 py-3 glass-button text-xs font-black transition-all"
               >
                 Return to Dashboard
               </button>

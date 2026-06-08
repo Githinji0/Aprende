@@ -1,11 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Heart, LayoutDashboard, MessageSquare, Award, Search, Bell, Globe, Calendar, Bookmark, LogOut, Flame, Languages, Gamepad2 } from 'lucide-react';
+import { Heart, LayoutDashboard, MessageSquare, Award, Search, Bell, Globe, Calendar, Bookmark, LogOut, Flame, Languages, Gamepad2, ChevronDown } from 'lucide-react';
 import LoginRegister from './pages/LoginRegister';
 import Dashboard from './pages/Dashboard';
 import LessonInterface from './pages/LessonInterface';
 import RoleplayZone from './pages/RoleplayZone';
 import ProgressReview from './pages/ProgressReview';
 import GamesHub from './pages/GamesHub';
+
+const ACCENT_LABELS = {
+  'es-ES': '🇪🇸 España',
+  'es-MX': '🇲🇽 México',
+  'es-AR': '🇦🇷 Argentina'
+};
 
 function App() {
   const [user, setUser] = useState(null);
@@ -15,6 +21,12 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [showNotifications, setShowNotifications] = useState(false);
+  const [voiceAccent, setVoiceAccent] = useState(
+    localStorage.getItem('voiceAccent') || 'es-ES'
+  );
+  const [showAccentDropdown, setShowAccentDropdown] = useState(false);
+  const accentDropdownRef = useRef(null);
+
   const [notifications, setNotifications] = useState([
     {
       id: 1,
@@ -40,11 +52,14 @@ function App() {
   ]);
   const notificationsRef = useRef(null);
 
-  // Close notifications dropdown when clicking outside
+  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (notificationsRef.current && !notificationsRef.current.contains(event.target)) {
         setShowNotifications(false);
+      }
+      if (accentDropdownRef.current && !accentDropdownRef.current.contains(event.target)) {
+        setShowAccentDropdown(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -181,7 +196,7 @@ function App() {
           {/* Logo / Brand */}
           <div className="p-5 border-b border-brand-200 flex items-center gap-3">
             <img src="/logo.png" alt="Aprende Logo" className="w-9 h-9 object-contain" />
-            <span className="text-xl font-bold bg-gradient-to-r from-accent-indigo to-accent-violet bg-clip-text text-transparent">
+            <span className="text-xl font-bold text-espana-red">
               Aprende
             </span>
           </div>
@@ -190,9 +205,9 @@ function App() {
           <nav className="flex-1 p-4 flex flex-col gap-1.5">
             <button
               onClick={() => { setCurrentTab('dashboard'); setActiveLessonId(null); }}
-              className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all duration-200 ${
+              className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all duration-200 focus:outline-none ${
                 currentTab === 'dashboard' || currentTab === 'lesson'
-                  ? 'bg-accent-indigo text-white shadow-md shadow-indigo-150'
+                  ? 'text-white glass-red-button shadow-sm'
                   : 'text-brand-600 hover:bg-brand-50 hover:text-brand-900'
               }`}
             >
@@ -202,9 +217,9 @@ function App() {
 
             <button
               onClick={() => { setCurrentTab('roleplay'); setActiveLessonId(null); }}
-              className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all duration-200 ${
+              className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all duration-200 focus:outline-none ${
                 currentTab === 'roleplay'
-                  ? 'bg-accent-indigo text-white shadow-md shadow-indigo-150'
+                  ? 'text-white glass-red-button shadow-sm'
                   : 'text-brand-600 hover:bg-brand-50 hover:text-brand-900'
               }`}
             >
@@ -214,9 +229,9 @@ function App() {
 
             <button
               onClick={() => { setCurrentTab('progress'); setActiveLessonId(null); }}
-              className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all duration-200 ${
+              className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all duration-200 focus:outline-none ${
                 currentTab === 'progress'
-                  ? 'bg-accent-indigo text-white shadow-md shadow-indigo-150'
+                  ? 'text-white glass-red-button shadow-sm'
                   : 'text-brand-600 hover:bg-brand-50 hover:text-brand-900'
               }`}
             >
@@ -226,9 +241,9 @@ function App() {
 
             <button
               onClick={() => { setCurrentTab('games'); setActiveLessonId(null); }}
-              className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all duration-200 ${
+              className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all duration-200 focus:outline-none ${
                 currentTab === 'games'
-                  ? 'bg-accent-indigo text-white shadow-md shadow-indigo-150'
+                  ? 'text-white glass-red-button shadow-sm'
                   : 'text-brand-600 hover:bg-brand-50 hover:text-brand-900'
               }`}
             >
@@ -259,7 +274,7 @@ function App() {
 
           {/* User Profile / Logout (bottom of sidebar) */}
           <div className="p-4 border-t border-brand-200 flex flex-col gap-3">
-            <div className="flex items-center gap-3 bg-brand-50/60 p-3 rounded-2xl border border-brand-250">
+            <div className="flex items-center gap-3 bg-brand-50/60 p-3 rounded-2xl border border-brand-200">
               <div className="w-10 h-10 rounded-full border border-indigo-200 overflow-hidden bg-brand-100 flex items-center justify-center shrink-0">
                 <img src="/avatars/user.png" alt={user.username} className="w-full h-full object-cover" />
               </div>
@@ -305,16 +320,50 @@ function App() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search chapters, lessons, or vocabulary..."
-                className="w-full pl-10 pr-4 py-2 bg-brand-100/50 hover:bg-brand-100/80 focus:bg-white border border-brand-200 focus:border-accent-indigo rounded-xl text-xs font-semibold placeholder-brand-400 outline-none transition-all duration-200"
+                className="w-full pl-10 pr-4 py-2.5 glass-input rounded-xl text-xs font-semibold placeholder-brand-400 outline-none transition-all duration-200"
               />
             </div>
 
             {/* Header Right Actions */}
             <div className="flex items-center gap-4 shrink-0">
-              {/* Language Indicator */}
-              <div className="flex items-center gap-1.5 text-brand-500 hover:bg-brand-50 p-2 rounded-xl cursor-pointer text-xs font-bold transition-colors">
-                <Globe size={16} className="text-accent-indigo" />
-                <span className="hidden xs:inline">ES</span>
+              {/* Voice Accent Dropdown */}
+              <div className="relative" ref={accentDropdownRef}>
+                <button
+                  onClick={() => setShowAccentDropdown(!showAccentDropdown)}
+                  className="flex items-center gap-1.5 px-3 py-2 bg-brand-100 hover:bg-brand-200 border border-brand-300 rounded-xl text-xs font-extrabold text-brand-800 transition-all duration-200 shadow-sm focus:outline-none flex items-center justify-center cursor-pointer"
+                  title="Choose AI Voice Accent"
+                >
+                  <Globe size={15} className="text-espana-red shrink-0" />
+                  <span className="hidden xs:inline">{ACCENT_LABELS[voiceAccent]}</span>
+                  <ChevronDown size={14} className={`text-brand-500 transition-transform duration-200 ${showAccentDropdown ? 'rotate-180' : ''}`} />
+                </button>
+
+                {showAccentDropdown && (
+                  <div className="absolute right-0 mt-2 w-44 bg-white border border-brand-200 rounded-2xl shadow-xl z-50 overflow-hidden py-1.5 animate-fade-in">
+                    {Object.entries(ACCENT_LABELS).map(([code, label]) => {
+                      const isSelected = voiceAccent === code;
+                      return (
+                        <button
+                          key={code}
+                          type="button"
+                          onClick={() => {
+                            localStorage.setItem('voiceAccent', code);
+                            setVoiceAccent(code);
+                            setShowAccentDropdown(false);
+                          }}
+                          className={`w-full flex items-center justify-between px-4 py-2.5 text-left text-xs font-bold transition-all duration-150 cursor-pointer ${
+                            isSelected 
+                              ? 'bg-indigo-50/70 text-accent-indigo' 
+                              : 'text-brand-700 hover:bg-brand-50 hover:text-brand-900'
+                          }`}
+                        >
+                          <span>{label}</span>
+                          {isSelected && <span className="w-1.5 h-1.5 bg-accent-indigo rounded-full"></span>}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
 
               {/* Notification Bell with Dropdown */}

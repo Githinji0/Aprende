@@ -156,7 +156,7 @@ const AgreementBuilder = ({ onBack, onGameComplete }) => {
                     key={`${word}-${idx}`}
                     onClick={() => handleWorkspaceBrickClick(word)}
                     disabled={roundCompleted}
-                    className="px-4.5 py-2.5 bg-espana-red hover:opacity-90 text-white font-extrabold text-sm rounded-xl transition-all shadow-sm active:scale-95 outline-none"
+                    className="px-5 py-3 bg-espana-red hover:opacity-90 text-white font-extrabold text-sm rounded-2xl transition-all shadow-sm active:scale-95 outline-none"
                   >
                     {word}
                   </button>
@@ -177,7 +177,7 @@ const AgreementBuilder = ({ onBack, onGameComplete }) => {
                     key={`${word}-${idx}`}
                     onClick={() => handlePoolBrickClick(word)}
                     disabled={roundCompleted}
-                    className="px-4.5 py-2.5 bg-brand-100 hover:bg-brand-200 border border-brand-300 text-espana-charcoal font-extrabold text-sm rounded-xl transition-all shadow-sm active:scale-95 outline-none"
+                    className="px-5 py-3 bg-brand-100 hover:bg-brand-200 border border-brand-300 text-espana-charcoal font-extrabold text-sm rounded-2xl transition-all shadow-sm active:scale-95 outline-none"
                   >
                     {word}
                   </button>
@@ -209,7 +209,7 @@ const AgreementBuilder = ({ onBack, onGameComplete }) => {
                     type="button"
                     onClick={handleResetRound}
                     disabled={workspaceBricks.length === 0}
-                    className="flex-1 px-4 py-3.5 border border-brand-300 text-brand-600 rounded-2xl text-xs font-extrabold hover:bg-brand-50 bg-white transition-colors disabled:opacity-50 disabled:pointer-events-none"
+                    className="flex-1 glass-button py-3 text-xs font-extrabold disabled:opacity-50 disabled:pointer-events-none"
                   >
                     Clear Workspace
                   </button>
@@ -217,7 +217,7 @@ const AgreementBuilder = ({ onBack, onGameComplete }) => {
                     type="button"
                     onClick={handleCheckAssembly}
                     disabled={workspaceBricks.length === 0}
-                    className="flex-1 px-4 py-3.5 bg-espana-red hover:bg-red-700 text-white rounded-2xl text-xs font-extrabold shadow-md shadow-red-100 transition-all disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98]"
+                    className="flex-1 glass-red-button py-3 text-xs font-extrabold disabled:opacity-50 disabled:pointer-events-none"
                   >
                     Validate Sentence
                   </button>
@@ -226,7 +226,7 @@ const AgreementBuilder = ({ onBack, onGameComplete }) => {
                 <button
                   type="button"
                   onClick={handleNextRound}
-                  className="w-full bg-espana-gold hover:opacity-95 text-slate-900 font-extrabold py-3.5 rounded-2xl flex items-center justify-center gap-2 text-xs shadow-md"
+                  className="w-full glass-emerald-button py-3 text-xs font-extrabold flex items-center justify-center gap-2 shadow-md"
                 >
                   <span>Next Round</span>
                   <ArrowRight size={14} />
@@ -250,7 +250,7 @@ const AgreementBuilder = ({ onBack, onGameComplete }) => {
             </p>
           </div>
 
-          <div className="bg-brand-50/80 px-6 py-4 rounded-2xl border border-brand-250 flex items-center gap-4">
+          <div className="bg-brand-50/80 px-6 py-4 rounded-2xl border border-brand-200 flex items-center gap-4">
             <div className="flex flex-col text-left">
               <span className="text-[10px] font-black text-brand-400 uppercase tracking-wider">Total Reward</span>
               <span className="text-base font-black text-espana-charcoal mt-0.5">+200 XP</span>
@@ -265,13 +265,13 @@ const AgreementBuilder = ({ onBack, onGameComplete }) => {
           <div className="flex gap-3 w-full max-w-sm mt-2">
             <button
               onClick={() => initializeRound(0)}
-              className="flex-1 px-4 py-3.5 border border-brand-300 text-brand-600 rounded-2xl text-xs font-extrabold hover:bg-brand-50 bg-white transition-colors active:scale-95"
+              className="flex-1 glass-button py-3 text-xs font-extrabold"
             >
               Play Again
             </button>
             <button
               onClick={onBack}
-              className="flex-1 px-4 py-3.5 bg-espana-red hover:bg-red-700 text-white rounded-2xl text-xs font-extrabold shadow-md shadow-red-100 transition-all active:scale-95"
+              className="flex-1 glass-red-button py-3 text-xs font-extrabold"
             >
               Back to Games
             </button>
