@@ -395,7 +395,7 @@ const Dashboard = ({ user, onStartLesson, token, searchQuery }) => {
           {/* Card Left: Premium Spain flag banner */}
           <div 
             className="w-full md:w-2/5 relative min-h-[160px] md:min-h-auto p-8 flex flex-col justify-between overflow-hidden shrink-0 select-none bg-cover bg-center"
-            style={{ backgroundImage: `url('/spain_flag.png?v=2')` }}
+            style={{ backgroundImage: `url('/spain_flag.png?v=3')` }}
           >
             {/* Dark overlay to ensure text readability */}
             <div className="absolute inset-0 bg-black/35 pointer-events-none"></div>

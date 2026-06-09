@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Heart, LayoutDashboard, MessageSquare, Award, Search, Bell, Globe, Calendar, Bookmark, LogOut, Flame, Languages, Gamepad2, ChevronDown } from 'lucide-react';
+import { Heart, LayoutDashboard, MessageSquare, Award, Search, Bell, Globe, Calendar, Bookmark, LogOut, Flame, Languages, Gamepad2, ChevronDown, Sun, Moon } from 'lucide-react';
 import LoginRegister from './pages/LoginRegister';
 import Dashboard from './pages/Dashboard';
 import LessonInterface from './pages/LessonInterface';
@@ -26,6 +26,24 @@ function App() {
   );
   const [showAccentDropdown, setShowAccentDropdown] = useState(false);
   const accentDropdownRef = useRef(null);
+
+  const [theme, setTheme] = useState(
+    localStorage.getItem('theme') || 'light'
+  );
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
+
+  const toggleTheme = () => {
+    const nextTheme = theme === 'light' ? 'dark' : 'light';
+    setTheme(nextTheme);
+    localStorage.setItem('theme', nextTheme);
+  };
 
   const [notifications, setNotifications] = useState([
     {
@@ -300,7 +318,7 @@ function App() {
         
         {/* 2. TOP HEADER (if authenticated) */}
         {user ? (
-          <header className="sticky top-0 bg-white/80 backdrop-blur-md border-b border-brand-200 px-6 py-4 z-30 flex items-center justify-between gap-4">
+          <header className="sticky top-0 bg-white/80 backdrop-blur-md px-6 py-4 z-30 flex items-center justify-between gap-4">
             {/* Title / Tab Indicator */}
             <div className="flex items-center gap-3">
               {/* Mobile hamburger logo */}
@@ -365,6 +383,15 @@ function App() {
                   </div>
                 )}
               </div>
+
+              {/* Theme Toggle Button */}
+              <button
+                onClick={toggleTheme}
+                className="p-2 text-brand-500 hover:bg-brand-50 rounded-xl cursor-pointer transition-colors focus:outline-none flex items-center justify-center dark:text-slate-400 dark:hover:bg-slate-800"
+                title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+              >
+                {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+              </button>
 
               {/* Notification Bell with Dropdown */}
               <div className="relative flex items-center justify-center" ref={notificationsRef}>

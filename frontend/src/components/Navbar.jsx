@@ -3,7 +3,7 @@ import { Flame, Star, LogOut, MessageSquare, BookOpen, User, Award, GraduationCa
 
 const Navbar = ({ user, currentTab, setCurrentTab, onLogout }) => {
   return (
-    <nav className="glass-card sticky top-0 z-50 px-6 py-4 shadow-sm border-b border-brand-200">
+    <nav className="glass-card sticky top-0 z-50 px-6 py-4 shadow-sm">
       <div className="max-w-6xl mx-auto flex items-center justify-between">
         
         {/* Brand Logo */}
