@@ -10,7 +10,8 @@ const getProgress = async (req, res) => {
     const progressList = await Progress.find({ user: req.user.id });
     res.json(progressList);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Get progress error:', error);
+    res.status(500).json({ message: 'An unexpected server error occurred. Please try again later.' });
   }
 };
 
@@ -110,7 +111,8 @@ const completeLesson = async (req, res) => {
       progress,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Complete lesson error:', error);
+    res.status(500).json({ message: 'An unexpected server error occurred. Please try again later.' });
   }
 };
 

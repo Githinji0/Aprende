@@ -58,8 +58,7 @@ app.use('/api/ai', aiRoutes);
 app.use((err, req, res, next) => {
   console.error('Express Unhandled Error:', err.stack);
   res.status(500).json({
-    message: 'An internal server error occurred',
-    error: process.env.NODE_ENV === 'development' ? err.message : {}
+    message: 'An unexpected server error occurred. Please try again later.'
   });
 });
 

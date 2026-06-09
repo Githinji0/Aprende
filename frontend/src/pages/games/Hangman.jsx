@@ -46,18 +46,19 @@ const Hangman = ({ onBack, onGameComplete }) => {
 
   const handleGuess = (letter) => {
     if (gameOver || gameWon) return;
-    if (guessedLetters.includes(letter)) return;
+    const normalizedLetter = stripAccents(letter.toLowerCase());
+    
+    if (guessedLetters.includes(normalizedLetter)) return;
 
-    const newGuesses = [...guessedLetters, letter];
+    const newGuesses = [...guessedLetters, normalizedLetter];
     setGuessedLetters(newGuesses);
 
     // Check if letter exists in the secret word
     const secretWord = secretObj.word.toLowerCase();
-    const normalizedLetter = stripAccents(letter);
     
-    // A guess is correct if the letter is directly in the word OR if its normalized version is in the word
+    // A guess is correct if the normalized letter matches the normalized secret word character
     const isCorrect = [...secretWord].some(char => 
-      char === letter || stripAccents(char) === normalizedLetter
+      stripAccents(char) === normalizedLetter
     );
 
     if (!isCorrect) {
@@ -67,9 +68,9 @@ const Hangman = ({ onBack, onGameComplete }) => {
         setGameOver(true);
       }
     } else {
-      // Check win condition
+      // Check win condition using normalized letters
       const won = [...secretWord].every(char => 
-        newGuesses.includes(char) || newGuesses.includes(stripAccents(char))
+        newGuesses.includes(stripAccents(char))
       );
       if (won) {
         setGameWon(true);
@@ -82,7 +83,7 @@ const Hangman = ({ onBack, onGameComplete }) => {
     if (!secretObj) return null;
     return [...secretObj.word].map((char, index) => {
       const charLower = char.toLowerCase();
-      const isGuessed = guessedLetters.includes(charLower) || guessedLetters.includes(stripAccents(charLower));
+      const isGuessed = guessedLetters.includes(stripAccents(charLower));
       
       return (
         <span 
@@ -203,7 +204,7 @@ const Hangman = ({ onBack, onGameComplete }) => {
             <span className="text-[10px] font-black text-brand-400 uppercase tracking-wider pl-1 select-none">Guess a Letter</span>
             <div className="flex flex-wrap gap-1.5 justify-center p-4 bg-brand-50/50 border border-brand-200 rounded-2xl">
               {ALPHABET.map((letter) => {
-                const isUsed = guessedLetters.includes(letter);
+                const isUsed = guessedLetters.includes(stripAccents(letter));
                 return (
                   <button
                     key={letter}

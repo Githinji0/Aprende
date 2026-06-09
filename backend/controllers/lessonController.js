@@ -8,7 +8,8 @@ const getLessons = async (req, res) => {
     const lessons = await Lesson.find({}).select('title difficulty description xpReward chapterNumber chapterTitle lessonOrder lessonType');
     res.json(lessons);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Get lessons error:', error);
+    res.status(500).json({ message: 'An unexpected server error occurred. Please try again later.' });
   }
 };
 
@@ -23,7 +24,8 @@ const getLessonById = async (req, res) => {
     }
     res.json(lesson);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Get lesson by ID error:', error);
+    res.status(500).json({ message: 'An unexpected server error occurred. Please try again later.' });
   }
 };
 

@@ -74,7 +74,7 @@ Follow these rules strictly:
     res.json({ reply: aiResponseText });
   } catch (error) {
     console.error('Gemini API Error:', error);
-    res.status(500).json({ message: 'Failed to communicate with AI: ' + error.message });
+    res.status(500).json({ message: 'Failed to communicate with AI. Please try again later.' });
   }
 };
 

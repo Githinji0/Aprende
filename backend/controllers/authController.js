@@ -43,7 +43,8 @@ const registerUser = async (req, res) => {
       res.status(400).json({ message: 'Invalid user data' });
     }
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Registration error:', error);
+    res.status(500).json({ message: 'An unexpected server error occurred. Please try again later.' });
   }
 };
 
@@ -91,7 +92,8 @@ const loginUser = async (req, res) => {
       res.status(401).json({ message: 'Invalid email or password' });
     }
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Login error:', error);
+    res.status(500).json({ message: 'An unexpected server error occurred. Please try again later.' });
   }
 };
 
@@ -110,7 +112,8 @@ const getMe = async (req, res) => {
       lastActiveDate: req.user.lastActiveDate,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Get profile error:', error);
+    res.status(500).json({ message: 'An unexpected server error occurred. Please try again later.' });
   }
 };
 
