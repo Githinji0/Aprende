@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
-import { Gamepad2, Award, Sparkles, Layers, MessageSquare, Volume2, ArrowRight, HelpCircle } from 'lucide-react';
+import { Gamepad2, Award, Sparkles, Layers, MessageSquare, Volume2, ArrowRight, HelpCircle, Apple, Timer, Map, Grid } from 'lucide-react';
 import VocabMatchmaker from './games/VocabMatchmaker';
 import AgreementBuilder from './games/AgreementBuilder';
 import CuentaCafeteria from './games/CuentaCafeteria';
 import Hangman from './games/Hangman';
+import Supermercado from './games/Supermercado';
+import TraficoPalabras from './games/TraficoPalabras';
+import RapidoSpeedrun from './games/RapidoSpeedrun';
+import MapaCiudad from './games/MapaCiudad';
+import MemoriaFlautin from './games/MemoriaFlautin';
 import { PixelCTAButton } from '../components/PixelCTAButton';
 
 const GAMES_LIST = [
@@ -38,6 +43,46 @@ const GAMES_LIST = [
     pointsInfo: '+150 XP Reward',
     icon: HelpCircle,
     badge: 'Spelling'
+  },
+  {
+    id: 'supermercado',
+    title: 'Supermercado',
+    description: 'Vocabulary categorizer. Sort foods into the correct shopping carts: Frutas or Verduras.',
+    pointsInfo: '+150 XP Reward',
+    icon: Apple,
+    badge: 'Vocabulary'
+  },
+  {
+    id: 'trafico',
+    title: 'Tráfico de Palabras',
+    description: 'Sentence assembly race. Arrange words in the correct chronological order to complete sentences.',
+    pointsInfo: '+150 XP Reward',
+    icon: MessageSquare,
+    badge: 'Syntax'
+  },
+  {
+    id: 'rapido',
+    title: '¡Rápido! Speedrun',
+    description: 'Translate cards under time pressure and build response streaks to gain multipliers.',
+    pointsInfo: '+150 XP Reward',
+    icon: Timer,
+    badge: 'Vocabulary'
+  },
+  {
+    id: 'mapa',
+    title: 'El Mapa de la Ciudad',
+    description: 'Explorer clicker. Listen to directional descriptions and tap targets on the map.',
+    pointsInfo: '+200 XP Reward',
+    icon: Map,
+    badge: 'Directions'
+  },
+  {
+    id: 'memoria',
+    title: 'Memoria Flautín',
+    description: '4x4 card matching memory grid pairing Spanish words with English/Emoji counterparts.',
+    pointsInfo: '+150 XP Reward',
+    icon: Grid,
+    badge: 'Memory'
   }
 ];
 
@@ -151,6 +196,21 @@ const GamesHub = ({ user, token, onXpGain }) => {
             )}
             {activeGame === 'hangman' && (
               <Hangman onBack={handleBackToHub} onGameComplete={handleGameComplete} />
+            )}
+            {activeGame === 'supermercado' && (
+              <Supermercado onBack={handleBackToHub} onGameComplete={handleGameComplete} />
+            )}
+            {activeGame === 'trafico' && (
+              <TraficoPalabras onBack={handleBackToHub} onGameComplete={handleGameComplete} />
+            )}
+            {activeGame === 'rapido' && (
+              <RapidoSpeedrun onBack={handleBackToHub} onGameComplete={handleGameComplete} />
+            )}
+            {activeGame === 'mapa' && (
+              <MapaCiudad onBack={handleBackToHub} onGameComplete={handleGameComplete} />
+            )}
+            {activeGame === 'memoria' && (
+              <MemoriaFlautin onBack={handleBackToHub} onGameComplete={handleGameComplete} />
             )}
           </div>
         )}

@@ -249,7 +249,7 @@ const Hangman = ({ onBack, onGameComplete }) => {
             <div className="h-8 w-[1px] bg-brand-200"></div>
             <div className="flex flex-col text-left">
               <span className="text-[10px] font-black text-brand-400 uppercase tracking-wider">Mistakes Avoided</span>
-              <span className="text-base font-black text-espana-charcoal mt-0.5">{mistakes} / 6 tries</span>
+              <span className="text-base font-black text-espana-charcoal mt-0.5">{6 - mistakes} / 6 tries</span>
             </div>
           </div>
 

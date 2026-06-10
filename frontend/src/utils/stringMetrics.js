@@ -85,6 +85,41 @@ export const matchWithPlaceholders = (cleanInput, cleanKey) => {
   return cleanInput === cleanKey;
 };
 
+export const getSubjectPronoun = (str) => {
+  const match = str.match(/^(yo|tú|tu|él|el|ella|ellos|ellas|nosotros|nosotras|vosotros|vosotras|usted|ustedes)(?:\s+|$)/i);
+  return match ? match[1].toLowerCase() : null;
+};
+
+export const stripSubjectPronoun = (str) => {
+  return str.replace(/^(yo|tú|tu|él|el|ella|ellos|ellas|nosotros|nosotras|vosotros|vosotras|usted|ustedes)\s+/i, '').trim();
+};
+
+export const pronounsMatch = (p1, p2) => {
+  if (p1 === p2) return true;
+  const classes = [
+    ['tú', 'tu'],
+    ['él', 'el'],
+    ['nosotros', 'nosotras'],
+    ['vosotros', 'vosotras'],
+    ['ellos', 'ellas']
+  ];
+  for (const cls of classes) {
+    if (cls.includes(p1) && cls.includes(p2)) return true;
+  }
+  return false;
+};
+
+export const areStringsEquivalent = (a, b) => {
+  const pA = getSubjectPronoun(a);
+  const pB = getSubjectPronoun(b);
+  if (pA !== null && pB !== null && !pronounsMatch(pA, pB)) {
+    return false;
+  }
+  const sa = stripSubjectPronoun(a);
+  const sb = stripSubjectPronoun(b);
+  return sa === sb || matchWithPlaceholders(sa, sb);
+};
+
 /**
  * Assesses the user's answer spelling against the key
  * @param {string} userInput
@@ -95,8 +130,8 @@ export const checkSpelling = (userInput, answerKey) => {
   const cleanInput = userInput.trim().toLowerCase();
   const cleanKey = answerKey.trim().toLowerCase();
 
-  // 1. Exact Match (Case-insensitive) / Placeholder Match
-  if (cleanInput === cleanKey || matchWithPlaceholders(cleanInput, cleanKey)) {
+  // 1. Exact Match / Placeholder Match / Pronoun-equivalent Exact Match
+  if (areStringsEquivalent(cleanInput, cleanKey)) {
     return {
       success: true,
       partial: false,
@@ -109,7 +144,7 @@ export const checkSpelling = (userInput, answerKey) => {
   const noPunctInput = removePunctuation(cleanInput);
   const noPunctKey = removePunctuation(cleanKey);
 
-  if (noPunctInput === noPunctKey || matchWithPlaceholders(noPunctInput, noPunctKey)) {
+  if (areStringsEquivalent(noPunctInput, noPunctKey)) {
     return {
       success: true,
       partial: true,
@@ -122,7 +157,7 @@ export const checkSpelling = (userInput, answerKey) => {
   const unaccentedInput = stripAccents(noPunctInput);
   const unaccentedKey = stripAccents(noPunctKey);
 
-  if (unaccentedInput === unaccentedKey || matchWithPlaceholders(unaccentedInput, unaccentedKey)) {
+  if (areStringsEquivalent(unaccentedInput, unaccentedKey)) {
     return {
       success: true,
       partial: true,
@@ -131,15 +166,22 @@ export const checkSpelling = (userInput, answerKey) => {
     };
   }
 
-  // 3. Typo distance check (Levenshtein distance of exactly 1)
-  const distance = getLevenshteinDistance(unaccentedInput, unaccentedKey);
-  if (distance === 1) {
-    return {
-      success: true,
-      partial: true,
-      warning: "¡Casi! Pay attention to accents or minor typos.",
-      score: 80,
-    };
+  // 3. Typo distance check (Levenshtein distance of exactly 1 on the verb/noun core)
+  const pA = getSubjectPronoun(unaccentedInput);
+  const pB = getSubjectPronoun(unaccentedKey);
+  const sa = stripSubjectPronoun(unaccentedInput);
+  const sb = stripSubjectPronoun(unaccentedKey);
+
+  if (pA === null || pB === null || pronounsMatch(pA, pB)) {
+    const distance = getLevenshteinDistance(sa, sb);
+    if (distance === 1) {
+      return {
+        success: true,
+        partial: true,
+        warning: "¡Casi! Pay attention to accents or minor typos.",
+        score: 80,
+      };
+    }
   }
 
   // 4. Failure (Incorrect spelling)

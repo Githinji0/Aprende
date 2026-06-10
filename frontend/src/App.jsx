@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Heart, LayoutDashboard, MessageSquare, Award, Search, Bell, Globe, Calendar, Bookmark, LogOut, Flame, Languages, Gamepad2, ChevronDown, Sun, Moon } from 'lucide-react';
+import { Heart, LayoutDashboard, MessageSquare, Award, Search, Bell, Globe, Calendar, Bookmark, LogOut, Flame, Languages, Gamepad2, ChevronDown, Sun, Moon, BookOpen } from 'lucide-react';
 import LoginRegister from './pages/LoginRegister';
 import Dashboard from './pages/Dashboard';
 import LessonInterface from './pages/LessonInterface';
 import RoleplayZone from './pages/RoleplayZone';
 import ProgressReview from './pages/ProgressReview';
 import GamesHub from './pages/GamesHub';
+import CourseSelector from './pages/CourseSelector';
 
 const ACCENT_LABELS = {
   'es-ES': '🇪🇸 España',
@@ -19,6 +20,7 @@ function App() {
   const [currentTab, setCurrentTab] = useState('dashboard');
   const [activeLessonId, setActiveLessonId] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [currentCourse, setCurrentCourse] = useState(localStorage.getItem('activeCourse') || null);
   const [searchQuery, setSearchQuery] = useState('');
   const [showNotifications, setShowNotifications] = useState(false);
   const [voiceAccent, setVoiceAccent] = useState(
@@ -125,13 +127,23 @@ function App() {
   const handleAuthSuccess = (userData) => {
     setUser(userData);
     setToken(localStorage.getItem('token'));
+    const savedCourse = localStorage.getItem('activeCourse');
+    setCurrentCourse(savedCourse || null);
+    setCurrentTab('dashboard');
+  };
+
+  const handleSelectCourse = (course) => {
+    localStorage.setItem('activeCourse', course);
+    setCurrentCourse(course);
     setCurrentTab('dashboard');
   };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
+    localStorage.removeItem('activeCourse');
     setUser(null);
     setToken(null);
+    setCurrentCourse(null);
     setCurrentTab('dashboard');
     setActiveLessonId(null);
   };
@@ -209,10 +221,10 @@ function App() {
     <div className="min-h-screen flex bg-brand-50 font-sans">
       
       {/* 1. DESKTOP STICKY SIDEBAR (md:flex) */}
-      {user && (
-        <aside className="hidden md:flex flex-col w-64 bg-white border-r border-brand-200 sticky top-0 h-screen shrink-0 z-40">
+      {user && currentCourse && (
+        <aside className="hidden md:flex flex-col w-64 bg-white sticky top-0 h-screen shrink-0 z-40">
           {/* Logo / Brand */}
-          <div className="p-5 border-b border-brand-200 flex items-center gap-3">
+          <div className="p-5 flex items-center gap-3">
             <img src="/logo.png" alt="Aprende Logo" className="w-9 h-9 object-contain" />
             <span className="text-xl font-bold text-espana-red">
               Aprende
@@ -269,6 +281,14 @@ function App() {
               <span>Games & Puzzles</span>
             </button>
 
+            <button
+              onClick={() => { setCurrentCourse(null); localStorage.removeItem('activeCourse'); setActiveLessonId(null); }}
+              className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold transition-all duration-200 text-brand-600 hover:bg-brand-50 hover:text-brand-900 focus:outline-none"
+            >
+              <Languages size={18} className="text-espana-red shrink-0" />
+              <span>Switch Course</span>
+            </button>
+
             <div className="h-[1px] bg-brand-200 my-3"></div>
 
             {/* Aesthetic placeholders to match the reference image */}
@@ -291,7 +311,7 @@ function App() {
           </nav>
 
           {/* User Profile / Logout (bottom of sidebar) */}
-          <div className="p-4 border-t border-brand-200 flex flex-col gap-3">
+          <div className="p-4 flex flex-col gap-3">
             <div className="flex items-center gap-3 bg-brand-50/60 p-3 rounded-2xl border border-brand-200">
               <div className="w-10 h-10 rounded-full border border-indigo-200 overflow-hidden bg-brand-100 flex items-center justify-center shrink-0">
                 <img src="/avatars/user.png" alt={user.username} className="w-full h-full object-cover" />
@@ -317,7 +337,7 @@ function App() {
       <div className="flex-1 flex flex-col min-h-screen min-w-0">
         
         {/* 2. TOP HEADER (if authenticated) */}
-        {user ? (
+        {user && currentCourse ? (
           <header className="sticky top-0 bg-white/80 backdrop-blur-md px-6 py-4 z-30 flex items-center justify-between gap-4">
             {/* Title / Tab Indicator */}
             <div className="flex items-center gap-3">
@@ -328,6 +348,32 @@ function App() {
               <h2 className="hidden sm:block text-base font-extrabold text-brand-850 capitalize bg-indigo-50 text-accent-indigo px-3 py-1 rounded-xl">
                 {currentTab === 'dashboard' || currentTab === 'lesson' ? 'Home' : currentTab === 'roleplay' ? 'AI Roleplay' : currentTab === 'progress' ? 'My Progress' : 'Games & Puzzles'}
               </h2>
+
+              {/* Course Selector Dropdown/Switcher */}
+              <div className="flex items-center gap-1.5 ml-2">
+                <button
+                  onClick={() => { setCurrentCourse(null); localStorage.removeItem('activeCourse'); setActiveLessonId(null); }}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 border rounded-full text-[10px] font-black tracking-wide uppercase transition-all duration-200 cursor-pointer ${
+                    currentCourse === 'dummies'
+                      ? 'bg-indigo-50 hover:bg-indigo-100 border-indigo-200 text-indigo-700'
+                      : 'bg-red-50 hover:bg-red-100 border-red-200 text-red-600'
+                  }`}
+                  title="Click to Switch Course Track"
+                >
+                  {currentCourse === 'dummies' ? (
+                    <>
+                      <BookOpen size={12} className="shrink-0 text-indigo-600" />
+                      <span>For Dummies</span>
+                    </>
+                  ) : (
+                    <>
+                      <Languages size={12} className="shrink-0 text-espana-red" />
+                      <span>Complete A1</span>
+                    </>
+                  )}
+                  <span className="text-[8px] opacity-65 lowercase font-semibold ml-1">(switch)</span>
+                </button>
+              </div>
             </div>
 
             {/* Search Bar (functional lesson search!) */}
@@ -477,6 +523,8 @@ function App() {
         <main className="flex-1 w-full max-w-7xl mx-auto p-4 sm:p-6 md:p-8">
           {!user ? (
             <LoginRegister onAuthSuccess={handleAuthSuccess} />
+          ) : !currentCourse ? (
+            <CourseSelector onSelectCourse={handleSelectCourse} />
           ) : (
             <>
               {currentTab === 'dashboard' && (
@@ -485,6 +533,8 @@ function App() {
                   onStartLesson={handleStartLesson} 
                   token={token} 
                   searchQuery={searchQuery}
+                  currentCourse={currentCourse}
+                  setCurrentCourse={setCurrentCourse}
                 />
               )}
               {currentTab === 'lesson' && (
@@ -533,7 +583,7 @@ function App() {
         </footer>
 
         {/* 5. RESPONSIVE MOBILE NAVIGATION TAB BAR (md:hidden) */}
-        {user && (
+        {user && currentCourse && (
           <nav className="md:hidden sticky bottom-0 bg-white border-t border-brand-200 py-2.5 px-4 flex items-center justify-around z-40 shadow-lg">
             <button
               onClick={() => { setCurrentTab('dashboard'); setActiveLessonId(null); }}

@@ -29,14 +29,15 @@ app.use(express.json());
 connectDB().then(async () => {
   try {
     const lessonCount = await Lesson.countDocuments();
-    // If the database has the old small dataset (less than 10 lessons), clear and reseed the full 22 chapters
-    if (lessonCount === 0 || lessonCount < 10) {
-      console.log('Clearing old lessons and seeding new 22-chapter curriculum...');
+    const forceSeed = process.env.FORCE_SEED === 'true';
+
+    if (lessonCount === 0 || lessonCount !== seedData.length || forceSeed) {
+      console.log('Clearing old lessons and seeding combined (Beginner + Intermediate) curriculum...');
       await Lesson.deleteMany({});
       await Lesson.insertMany(seedData);
-      console.log('22-chapter curriculum seeded successfully!');
+      console.log('Combined Spanish curriculum seeded successfully!');
     } else {
-      console.log('Database already has curriculum data. Skipping seed.');
+      console.log('Database already has up-to-date curriculum data. Skipping seed.');
     }
   } catch (error) {
     console.error('Error seeding data:', error);

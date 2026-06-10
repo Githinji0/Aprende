@@ -16,13 +16,13 @@ const getChapterIcon = (chapter) => {
 const getChapterCardStyle = (chapter, isCompleted, isUnlocked) => {
   if (!isUnlocked) {
     return {
-      bg: 'bg-brand-100/70 border border-brand-200/50 text-brand-400',
-      pointerOdd: 'border-l-brand-200',
-      pointerEven: 'border-r-brand-200',
-      badgeBg: 'bg-brand-200',
-      iconColor: 'text-brand-300',
-      progressBarBg: 'bg-brand-300/30',
-      progressBarFill: 'bg-brand-300',
+      bg: 'bg-white/80 border border-brand-300/80 text-brand-650',
+      pointerOdd: 'border-l-brand-300',
+      pointerEven: 'border-r-brand-300',
+      badgeBg: 'bg-brand-200/60',
+      iconColor: 'text-brand-500',
+      progressBarBg: 'bg-brand-200/40',
+      progressBarFill: 'bg-brand-400',
       lessonItem: (isLCompleted, isLUnlocked) => ''
     };
   }
@@ -60,12 +60,14 @@ const getChapterCardStyle = (chapter, isCompleted, isUnlocked) => {
   };
 };
 
-const Dashboard = ({ user, onStartLesson, token, searchQuery }) => {
+const Dashboard = ({ user, onStartLesson, token, searchQuery, currentCourse = 'beginner', setCurrentCourse }) => {
   const [lessons, setLessons] = useState([]);
   const [progress, setProgress] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [expandedChapters, setExpandedChapters] = useState({});
+  
+  const activeDifficultyTab = currentCourse === 'dummies' ? 'Intermediate' : 'Beginner';
 
   const getWeeklyCalendar = () => {
     const day = new Date().getDay();
@@ -91,13 +93,14 @@ const Dashboard = ({ user, onStartLesson, token, searchQuery }) => {
   };
 
   const getActiveLesson = () => {
-    if (sortedLessons.length === 0) return null;
-    for (let i = 0; i < sortedLessons.length; i++) {
-      const lesson = sortedLessons[i];
+    const activeTabLessons = sortedLessons.filter(l => l.difficulty === activeDifficultyTab);
+    if (activeTabLessons.length === 0) return null;
+    for (let i = 0; i < activeTabLessons.length; i++) {
+      const lesson = activeTabLessons[i];
       const record = progress.find(p => p.lesson === lesson._id);
       const isCompleted = record ? record.completed : false;
       if (!isCompleted) {
-        const chapterLessons = sortedLessons.filter(l => l.chapterNumber === lesson.chapterNumber);
+        const chapterLessons = activeTabLessons.filter(l => l.chapterNumber === lesson.chapterNumber);
         const chapterCompletedCount = chapterLessons.filter(l => {
           const r = progress.find(p => p.lesson === l._id);
           return r ? r.completed : false;
@@ -112,9 +115,9 @@ const Dashboard = ({ user, onStartLesson, token, searchQuery }) => {
       }
     }
     return {
-      lesson: sortedLessons[sortedLessons.length - 1],
+      lesson: activeTabLessons[activeTabLessons.length - 1],
       chapterProgress: 100,
-      chapterTitle: sortedLessons[sortedLessons.length - 1].chapterTitle || 'Course Completed'
+      chapterTitle: activeTabLessons[activeTabLessons.length - 1].chapterTitle || 'Course Completed'
     };
   };
 
@@ -187,6 +190,9 @@ const Dashboard = ({ user, onStartLesson, token, searchQuery }) => {
     const chaptersMap = {};
     sortedLessons.forEach((lesson, globalIndex) => {
       const chNum = lesson.chapterNumber || 1;
+
+      // Filter by active tab difficulty
+      if (lesson.difficulty !== activeDifficultyTab) return;
 
       if (searchQuery && searchQuery.trim()) {
         const query = searchQuery.toLowerCase();
@@ -401,11 +407,15 @@ const Dashboard = ({ user, onStartLesson, token, searchQuery }) => {
             <div className="absolute inset-0 bg-black/35 pointer-events-none"></div>
 
             <span className="text-[10px] font-black tracking-widest text-white/95 uppercase bg-black/45 px-3 py-1 rounded-full w-max leading-none relative z-10">
-              SPANISH A1 COURSE
+              {activeDifficultyTab === 'Beginner' ? 'SPANISH A1 COURSE' : 'INTERMEDIATE BOOK COURSE'}
             </span>
             <div className="flex flex-col gap-1 mt-6 relative z-10">
-              <h3 className="text-3xl font-black text-white leading-tight tracking-wide drop-shadow-md">Aprende</h3>
-              <p className="text-white/95 text-xs font-bold uppercase tracking-wider drop-shadow-sm">Vocabulary & Interactive Practice</p>
+              <h3 className="text-3xl font-black text-white leading-tight tracking-wide drop-shadow-md">
+                {activeDifficultyTab === 'Beginner' ? 'Aprende A1' : 'Intermediate Spanish'}
+              </h3>
+              <p className="text-white/95 text-xs font-bold uppercase tracking-wider drop-shadow-sm">
+                {activeDifficultyTab === 'Beginner' ? 'Vocabulary & Interactive Practice' : 'Intermediate Spanish For Dummies'}
+              </p>
             </div>
           </div>
 
@@ -470,11 +480,15 @@ const Dashboard = ({ user, onStartLesson, token, searchQuery }) => {
 
       {/* 4. CHAPTERS ROADMAP TIMELINE */}
       <div className="flex flex-col gap-4 mt-4" id="roadmap-timeline">
-        <div className="flex items-center justify-between border-b border-brand-200 pb-3">
+        <div className="flex flex-col md:flex-row md:items-center justify-between border-b border-brand-200 pb-3 gap-4">
           <h2 className="text-xl font-black text-brand-900 flex items-center gap-2">
             <Languages size={20} className="text-accent-indigo" />
-            <span>Course Path ({groupedChapters.length} Chapters)</span>
+            <span>
+              {activeDifficultyTab === 'Beginner' ? 'Beginner Path' : 'Book Path'} ({groupedChapters.length} Chapters)
+            </span>
           </h2>
+          
+          {/* Tabs removed to keep course views strictly isolated */}
           {searchQuery?.trim() && (
             <span className="text-xs font-bold text-accent-indigo bg-indigo-50 px-2.5 py-1 rounded-full">
               Active search filter
@@ -536,7 +550,6 @@ const Dashboard = ({ user, onStartLesson, token, searchQuery }) => {
                   {/* Column 1: Chapter Card */}
                   <div className="w-[45%] flex items-center relative z-20">
                     <button
-                      disabled={!isChapterUnlocked}
                       onClick={() => toggleChapter(chapter.number)}
                       className={`w-full text-left p-6 transition-all duration-300 outline-none focus:ring-2 focus:ring-accent-indigo/35 relative flex flex-col ${
                         isExpanded ? 'rounded-[2rem]' : 'rounded-full'
@@ -670,9 +683,10 @@ const Dashboard = ({ user, onStartLesson, token, searchQuery }) => {
                       <path
                         d={isOdd ? "M 50,0 C 15,25 15,75 50,100" : "M 50,0 C 85,25 85,75 50,100"}
                         fill="none"
-                        stroke="#e2e8f0"
+                        stroke="#BCA78B"
                         strokeWidth="3.5"
                         strokeDasharray="6,6"
+                        className="timeline-path"
                       />
                     </svg>
 
@@ -686,9 +700,9 @@ const Dashboard = ({ user, onStartLesson, token, searchQuery }) => {
 
                     {/* Horizontal Connector to Card */}
                     {isOdd ? (
-                      <div className="absolute top-1/2 left-0 w-1/4 h-[2px] border-t-2 border-dashed border-brand-200 -translate-y-1/2 pointer-events-none"></div>
+                      <div className="absolute top-1/2 left-0 w-1/4 h-[2px] border-t-2 border-dashed border-brand-300/80 -translate-y-1/2 pointer-events-none"></div>
                     ) : (
-                      <div className="absolute top-1/2 right-0 w-1/4 h-[2px] border-t-2 border-dashed border-brand-200 -translate-y-1/2 pointer-events-none"></div>
+                      <div className="absolute top-1/2 right-0 w-1/4 h-[2px] border-t-2 border-dashed border-brand-300/80 -translate-y-1/2 pointer-events-none"></div>
                     )}
 
                     {/* Timeline Node Marker */}
@@ -703,10 +717,10 @@ const Dashboard = ({ user, onStartLesson, token, searchQuery }) => {
                   {/* Column 3: Step Label */}
                   <div className={`w-[45%] flex items-center ${isOdd ? 'justify-start pl-8' : 'justify-end pr-8'}`}>
                     <div className={`flex flex-col ${isOdd ? 'text-left' : 'text-right'}`}>
-                      <span className="text-[11px] font-black text-brand-400 uppercase tracking-widest leading-none">
+                      <span className="text-[11px] font-black text-brand-500 uppercase tracking-widest leading-none">
                         Chapter
                       </span>
-                      <span className={`text-4xl font-extrabold leading-none mt-1 ${isChapterUnlocked ? 'text-brand-900' : 'text-brand-300'}`}>
+                      <span className={`text-4xl font-extrabold leading-none mt-1 ${isChapterUnlocked ? 'text-brand-900' : 'text-brand-500/80'}`}>
                         {chapter.number < 10 ? `0${chapter.number}` : chapter.number}
                       </span>
                     </div>
@@ -723,7 +737,7 @@ const Dashboard = ({ user, onStartLesson, token, searchQuery }) => {
                   {/* Timeline Column */}
                   <div className="w-12 relative flex justify-center shrink-0">
                     <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100" preserveAspectRatio="none">
-                      <line x1="50" y1="0" x2="50" y2="100" stroke="#cbd5e1" strokeWidth="3" strokeDasharray="6,6" />
+                      <line x1="50" y1="0" x2="50" y2="100" stroke="#BCA78B" strokeWidth="3" strokeDasharray="6,6" className="timeline-path" />
                     </svg>
                     
                     {/* Small start dot */}
@@ -740,7 +754,7 @@ const Dashboard = ({ user, onStartLesson, token, searchQuery }) => {
                   {/* Content Column */}
                   <div className="flex-1 flex flex-col gap-2">
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-black text-brand-400 uppercase tracking-widest">
+                      <span className="text-[10px] font-black text-brand-500 uppercase tracking-widest">
                         STEP {chapter.number < 10 ? `0${chapter.number}` : chapter.number}
                       </span>
                       <span className={`text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider ${
@@ -753,7 +767,6 @@ const Dashboard = ({ user, onStartLesson, token, searchQuery }) => {
                     </div>
 
                     <button
-                      disabled={!isChapterUnlocked}
                       onClick={() => toggleChapter(chapter.number)}
                       className={`w-full text-left p-5 transition-all duration-300 outline-none relative flex flex-col rounded-3xl ${cardStyle.bg}`}
                     >

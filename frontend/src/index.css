@@ -301,61 +301,73 @@ body {
 }
 
 .dark body {
-  background-color: #090d16 !important;
+  background-color: #000000 !important;
+  background-image: linear-gradient(135deg, #1c1c1c 0%, #000000 100%) !important;
+  background-attachment: fixed !important;
   color: #f8fafc !important;
 }
 
 /* Enable scrollbar dark theme */
 .dark ::-webkit-scrollbar-thumb {
-  background: #334155;
+  background: #4a4a4a;
 }
 .dark ::-webkit-scrollbar-thumb:hover {
-  background: #475569;
+  background: #666666;
 }
 
 /* Global brand element dark-mode overrides */
 .dark .bg-brand-50 {
-  background-color: #090d16 !important;
+  background-color: #000000 !important;
+  background-image: linear-gradient(135deg, #1c1c1c 0%, #000000 100%) !important;
+  background-attachment: fixed !important;
 }
 
 .dark .bg-white {
-  background-color: #111827 !important;
+  background-color: #181818 !important;
 }
 
 .dark .bg-brand-50\/60 {
-  background-color: rgba(17, 24, 39, 0.6) !important;
+  background-color: rgba(24, 24, 24, 0.6) !important;
 }
 
 .dark .bg-brand-100 {
-  background-color: #1f2937 !important;
+  background-color: #262626 !important;
 }
 
 .dark .bg-brand-100\/30 {
-  background-color: rgba(31, 41, 55, 0.3) !important;
+  background-color: rgba(38, 38, 38, 0.3) !important;
 }
 
 .dark .bg-brand-100\/50 {
-  background-color: rgba(31, 41, 55, 0.5) !important;
+  background-color: rgba(38, 38, 38, 0.5) !important;
 }
 
 .dark .bg-brand-50\/50 {
-  background-color: rgba(17, 24, 39, 0.5) !important;
+  background-color: rgba(24, 24, 24, 0.5) !important;
 }
 
 .dark .border-brand-100 {
-  border-color: #374151 !important;
+  border-color: transparent !important;
 }
 
 .dark .border-brand-200 {
-  border-color: #374151 !important;
+  border-color: transparent !important;
 }
 
 .dark .border-brand-200\/50 {
-  border-color: rgba(55, 65, 81, 0.5) !important;
+  border-color: transparent !important;
+}
+
+.dark .border-brand-300 {
+  border-color: transparent !important;
+}
+
+.dark .border-brand-300\/80 {
+  border-color: transparent !important;
 }
 
 .dark .border-white\/40 {
-  border-color: rgba(255, 255, 255, 0.1) !important;
+  border-color: transparent !important;
 }
 
 .dark .text-brand-900 {
@@ -396,59 +408,59 @@ body {
 
 /* Glassmorphism overrides for Dark Theme */
 .dark .glass-card {
-  background: rgba(17, 24, 39, 0.75) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3) !important;
+  background: rgba(24, 24, 24, 0.75) !important;
+  border: 1px solid transparent !important;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.35) !important;
 }
 
 .dark .glass-button {
-  background: rgba(31, 41, 55, 0.6) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: rgba(38, 38, 38, 0.6) !important;
+  border: 1px solid transparent !important;
   color: #f3f4f6 !important;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25) !important;
 }
 
 .dark .glass-button:hover:not(:disabled) {
-  background: rgba(31, 41, 55, 0.85) !important;
-  border-color: rgba(255, 255, 255, 0.18) !important;
+  background: rgba(38, 38, 38, 0.85) !important;
+  border-color: transparent !important;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35) !important;
 }
 
 .dark .glass-button:active:not(:disabled) {
-  background: rgba(17, 24, 39, 0.6) !important;
+  background: rgba(24, 24, 24, 0.6) !important;
 }
 
 .dark .glass-input {
-  background: rgba(17, 24, 39, 0.6) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background: rgba(24, 24, 24, 0.6) !important;
+  border: 1px solid transparent !important;
   color: #f3f4f6 !important;
 }
 
 .dark .glass-input:focus {
-  background: rgba(17, 24, 39, 0.85) !important;
-  border-color: rgba(208, 28, 31, 0.6) !important;
+  background: rgba(24, 24, 24, 0.85) !important;
+  border-color: transparent !important;
 }
 
 /* Neumorphism overrides for Dark Theme */
 .dark .neumorphic-flat {
-  background: #111827 !important;
+  background: #181818 !important;
   box-shadow: 6px 6px 12px rgba(0, 0, 0, 0.5), 
               -6px -6px 12px rgba(255, 255, 255, 0.03) !important;
-  border: 1px solid rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid transparent !important;
 }
 
 .dark .neumorphic-inset {
-  background: #090d16 !important;
-  box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.6), 
+  background: #0c0c0c !important;
+  box-shadow: inset 4px 4px 8px rgba(0, 0, 0, 0.7), 
               inset -4px -4px 8px rgba(255, 255, 255, 0.03) !important;
-  border: 1px solid rgba(255, 255, 255, 0.02) !important;
+  border: 1px solid transparent !important;
 }
 
 .dark .neumorphic-button {
-  background: #111827 !important;
-  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.45), 
+  background: #181818 !important;
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.55), 
               -4px -4px 8px rgba(255, 255, 255, 0.04) !important;
-  border: 1px solid rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid transparent !important;
   color: #e5e7eb !important;
 }
 
@@ -464,43 +476,46 @@ body {
 
 /* Timeline specific line/path overrides in dark mode */
 .dark svg path[stroke="#e2e8f0"],
-.dark svg line[stroke="#cbd5e1"] {
-  stroke: #374151 !important;
+.dark svg line[stroke="#cbd5e1"],
+.dark .timeline-path {
+  stroke: #4a4a4a !important;
 }
 
 /* Specific elements tweaking for dashboard active chapter pointer */
-.dark .border-l-brand-200 {
-  border-l-color: #374151 !important;
+.dark .border-l-brand-200,
+.dark .border-l-brand-300 {
+  border-l-color: transparent !important;
 }
-.dark .border-r-brand-200 {
-  border-r-color: #374151 !important;
+.dark .border-r-brand-200,
+.dark .border-r-brand-300 {
+  border-r-color: transparent !important;
 }
 .dark .bg-brand-200 {
-  background-color: #374151 !important;
+  background-color: #383838 !important;
 }
 .dark .text-brand-350 {
-  color: #4b5563 !important;
+  color: #4a4a4a !important;
 }
 .dark .border-brand-350 {
-  border-color: #4b5563 !important;
+  border-color: transparent !important;
 }
 .dark .bg-brand-300\/30 {
-  background-color: rgba(75, 85, 99, 0.3) !important;
+  background-color: rgba(74, 74, 74, 0.3) !important;
 }
 .dark .bg-brand-300 {
-  background-color: #4b5563 !important;
+  background-color: #4a4a4a !important;
 }
 .dark .text-brand-300 {
   color: #9ca3af !important;
 }
 .dark .bg-brand-200\/50 {
-  background-color: rgba(55, 65, 81, 0.5) !important;
+  background-color: rgba(56, 56, 56, 0.5) !important;
 }
 .dark .border-brand-200\/30 {
-  border-color: rgba(55, 65, 81, 0.3) !important;
+  border-color: transparent !important;
 }
 .dark .bg-brand-100\/30 {
-  background-color: rgba(55, 65, 81, 0.3) !important;
+  background-color: rgba(56, 56, 56, 0.3) !important;
 }
 
 /* Layout containers specific overrides in dark mode */
@@ -508,32 +523,32 @@ body {
 .dark header,
 .dark footer,
 .dark nav {
-  background-color: #111827 !important;
-  border-color: #1f2937 !important;
+  background-color: #181818 !important;
+  border-color: transparent !important;
 }
 
 .dark header {
-  background-color: rgba(17, 24, 39, 0.8) !important;
+  background-color: rgba(24, 24, 24, 0.8) !important;
 }
 
 .dark footer {
-  background-color: rgba(17, 24, 39, 0.4) !important;
+  background-color: rgba(24, 24, 24, 0.4) !important;
 }
 
 /* Specific opacity variations for bg-white in dark mode */
-.dark .bg-white\/95 { background-color: rgba(17, 24, 39, 0.95) !important; }
-.dark .bg-white\/90 { background-color: rgba(17, 24, 39, 0.90) !important; }
-.dark .bg-white\/85 { background-color: rgba(17, 24, 39, 0.85) !important; }
-.dark .bg-white\/80 { background-color: rgba(17, 24, 39, 0.80) !important; }
-.dark .bg-white\/75 { background-color: rgba(17, 24, 39, 0.75) !important; }
-.dark .bg-white\/70 { background-color: rgba(17, 24, 39, 0.70) !important; }
-.dark .bg-white\/60 { background-color: rgba(17, 24, 39, 0.60) !important; }
-.dark .bg-white\/50 { background-color: rgba(17, 24, 39, 0.50) !important; }
-.dark .bg-white\/40 { background-color: rgba(17, 24, 39, 0.40) !important; }
-.dark .bg-white\/30 { background-color: rgba(17, 24, 39, 0.30) !important; }
-.dark .bg-white\/20 { background-color: rgba(17, 24, 39, 0.20) !important; }
-.dark .bg-white\/10 { background-color: rgba(17, 24, 39, 0.10) !important; }
-.dark .bg-white\/5  { background-color: rgba(17, 24, 39, 0.05) !important; }
+.dark .bg-white\/95 { background-color: rgba(24, 24, 24, 0.95) !important; }
+.dark .bg-white\/90 { background-color: rgba(24, 24, 24, 0.90) !important; }
+.dark .bg-white\/85 { background-color: rgba(24, 24, 24, 0.85) !important; }
+.dark .bg-white\/80 { background-color: rgba(24, 24, 24, 0.80) !important; }
+.dark .bg-white\/75 { background-color: rgba(24, 24, 24, 0.75) !important; }
+.dark .bg-white\/70 { background-color: rgba(24, 24, 24, 0.70) !important; }
+.dark .bg-white\/60 { background-color: rgba(24, 24, 24, 0.60) !important; }
+.dark .bg-white\/50 { background-color: rgba(24, 24, 24, 0.50) !important; }
+.dark .bg-white\/40 { background-color: rgba(24, 24, 24, 0.40) !important; }
+.dark .bg-white\/30 { background-color: rgba(24, 24, 24, 0.30) !important; }
+.dark .bg-white\/20 { background-color: rgba(24, 24, 24, 0.20) !important; }
+.dark .bg-white\/10 { background-color: rgba(24, 24, 24, 0.10) !important; }
+.dark .bg-white\/5  { background-color: rgba(24, 24, 24, 0.05) !important; }
 
 /* Interactive/hover state overrides in dark mode */
 .dark .hover\:bg-brand-50:hover {
@@ -622,22 +637,26 @@ body {
 
 /* Espana Sand & Sand Background overrides in dark mode */
 .dark .bg-espana-sand {
-  background-color: #090d16 !important;
+  background-color: #000000 !important;
+  background-image: linear-gradient(135deg, #1c1c1c 0%, #000000 100%) !important;
+  background-attachment: fixed !important;
 }
-.dark .bg-espana-sand\/10 { background-color: rgba(17, 24, 39, 0.10) !important; }
-.dark .bg-espana-sand\/20 { background-color: rgba(17, 24, 39, 0.20) !important; }
-.dark .bg-espana-sand\/30 { background-color: rgba(17, 24, 39, 0.30) !important; }
-.dark .bg-espana-sand\/40 { background-color: rgba(17, 24, 39, 0.40) !important; }
-.dark .bg-espana-sand\/50 { background-color: rgba(17, 24, 39, 0.50) !important; }
-.dark .bg-espana-sand\/60 { background-color: rgba(17, 24, 39, 0.60) !important; }
-.dark .bg-espana-sand\/70 { background-color: rgba(17, 24, 39, 0.70) !important; }
-.dark .bg-espana-sand\/80 { background-color: rgba(17, 24, 39, 0.80) !important; }
+.dark .bg-espana-sand\/10 { background-color: rgba(24, 24, 24, 0.10) !important; }
+.dark .bg-espana-sand\/20 { background-color: rgba(24, 24, 24, 0.20) !important; }
+.dark .bg-espana-sand\/30 { background-color: rgba(24, 24, 24, 0.30) !important; }
+.dark .bg-espana-sand\/40 { background-color: rgba(24, 24, 24, 0.40) !important; }
+.dark .bg-espana-sand\/50 { background-color: rgba(24, 24, 24, 0.50) !important; }
+.dark .bg-espana-sand\/60 { background-color: rgba(24, 24, 24, 0.60) !important; }
+.dark .bg-espana-sand\/70 { background-color: rgba(24, 24, 24, 0.70) !important; }
+.dark .bg-espana-sand\/80 { background-color: rgba(24, 24, 24, 0.80) !important; }
 
 .dark .bg-sand {
-  background-color: #090d16 !important;
+  background-color: #000000 !important;
+  background-image: linear-gradient(135deg, #1c1c1c 0%, #000000 100%) !important;
+  background-attachment: fixed !important;
 }
 .dark .bg-sand\/40 {
-  background-color: rgba(17, 24, 39, 0.40) !important;
+  background-color: rgba(24, 24, 24, 0.40) !important;
 }
 
 /* Espana Charcoal text opacity modifiers overrides in dark mode */
