@@ -92,15 +92,34 @@ const Dashboard = ({ user, onStartLesson, token, searchQuery, currentCourse = 'b
     });
   };
 
+  // Sort lessons globally by chapter and order to establish progressive flow
+  const sortedLessons = [...lessons].sort((a, b) => {
+    if (a.chapterNumber !== b.chapterNumber) {
+      return a.chapterNumber - b.chapterNumber;
+    }
+    return a.lessonOrder - b.lessonOrder;
+  });
+
+  const getCourseLessons = () => {
+    let list = sortedLessons.filter(l => l.difficulty === activeDifficultyTab);
+    if (currentCourse === 'test_skills') {
+      list = list.filter(l => l.lessonType === 'checkpoint');
+    } else if (currentCourse === 'beginner') {
+      list = list.filter(l => l.lessonType !== 'checkpoint');
+    }
+    return list;
+  };
+
+  const courseLessons = getCourseLessons();
+
   const getActiveLesson = () => {
-    const activeTabLessons = sortedLessons.filter(l => l.difficulty === activeDifficultyTab);
-    if (activeTabLessons.length === 0) return null;
-    for (let i = 0; i < activeTabLessons.length; i++) {
-      const lesson = activeTabLessons[i];
+    if (courseLessons.length === 0) return null;
+    for (let i = 0; i < courseLessons.length; i++) {
+      const lesson = courseLessons[i];
       const record = progress.find(p => p.lesson === lesson._id);
       const isCompleted = record ? record.completed : false;
       if (!isCompleted) {
-        const chapterLessons = activeTabLessons.filter(l => l.chapterNumber === lesson.chapterNumber);
+        const chapterLessons = courseLessons.filter(l => l.chapterNumber === lesson.chapterNumber);
         const chapterCompletedCount = chapterLessons.filter(l => {
           const r = progress.find(p => p.lesson === l._id);
           return r ? r.completed : false;
@@ -115,9 +134,9 @@ const Dashboard = ({ user, onStartLesson, token, searchQuery, currentCourse = 'b
       }
     }
     return {
-      lesson: activeTabLessons[activeTabLessons.length - 1],
+      lesson: courseLessons[courseLessons.length - 1],
       chapterProgress: 100,
-      chapterTitle: activeTabLessons[activeTabLessons.length - 1].chapterTitle || 'Course Completed'
+      chapterTitle: courseLessons[courseLessons.length - 1].chapterTitle || 'Course Completed'
     };
   };
 
@@ -156,16 +175,7 @@ const Dashboard = ({ user, onStartLesson, token, searchQuery, currentCourse = 'b
     fetchDashboardData();
   }, [token]);
 
-
-  // Sort lessons globally by chapter and order to establish progressive flow
-  const sortedLessons = [...lessons].sort((a, b) => {
-    if (a.chapterNumber !== b.chapterNumber) {
-      return a.chapterNumber - b.chapterNumber;
-    }
-    return a.lessonOrder - b.lessonOrder;
-  });
-
-  // Helper to determine status of a lesson in the global flow
+  // Helper to determine status of a lesson in the current course flow
   const getLessonStatus = (lesson, index) => {
     const record = progress.find(p => p.lesson === lesson._id);
     const isCompleted = record ? record.completed : false;
@@ -174,7 +184,7 @@ const Dashboard = ({ user, onStartLesson, token, searchQuery, currentCourse = 'b
       return { isCompleted, isUnlocked: true, score: record?.score || 0 };
     }
 
-    const prevLesson = sortedLessons[index - 1];
+    const prevLesson = courseLessons[index - 1];
     const prevRecord = progress.find(p => p.lesson === prevLesson._id);
     const prevCompleted = prevRecord ? prevRecord.completed : false;
 
@@ -188,11 +198,8 @@ const Dashboard = ({ user, onStartLesson, token, searchQuery, currentCourse = 'b
   // Group lessons by chapter and apply dynamic query filtering
   const getGroupedChapters = () => {
     const chaptersMap = {};
-    sortedLessons.forEach((lesson, globalIndex) => {
+    courseLessons.forEach((lesson, courseIndex) => {
       const chNum = lesson.chapterNumber || 1;
-
-      // Filter by active tab difficulty
-      if (lesson.difficulty !== activeDifficultyTab) return;
 
       if (searchQuery && searchQuery.trim()) {
         const query = searchQuery.toLowerCase();
@@ -214,7 +221,7 @@ const Dashboard = ({ user, onStartLesson, token, searchQuery, currentCourse = 'b
       }
       chaptersMap[chNum].lessons.push({
         ...lesson,
-        globalIndex
+        courseIndex
       });
     });
     return Object.values(chaptersMap).sort((a, b) => a.number - b.number);
@@ -224,10 +231,10 @@ const Dashboard = ({ user, onStartLesson, token, searchQuery, currentCourse = 'b
 
   // Set default expanded chapter: the first incomplete chapter
   useEffect(() => {
-    if (sortedLessons.length > 0 && Object.keys(expandedChapters).length === 0) {
+    if (courseLessons.length > 0 && Object.keys(expandedChapters).length === 0) {
       let firstIncompleteChapter = 1;
-      for (let i = 0; i < sortedLessons.length; i++) {
-        const lesson = sortedLessons[i];
+      for (let i = 0; i < courseLessons.length; i++) {
+        const lesson = courseLessons[i];
         const record = progress.find(p => p.lesson === lesson._id);
         const isCompleted = record ? record.completed : false;
         if (!isCompleted) {
@@ -237,7 +244,7 @@ const Dashboard = ({ user, onStartLesson, token, searchQuery, currentCourse = 'b
       }
       setExpandedChapters({ [firstIncompleteChapter]: true });
     }
-  }, [lessons, progress]);
+  }, [lessons, progress, courseLessons]);
 
   const toggleChapter = (chapterNum) => {
     setExpandedChapters(prev => ({
@@ -407,14 +414,26 @@ const Dashboard = ({ user, onStartLesson, token, searchQuery, currentCourse = 'b
             <div className="absolute inset-0 bg-black/35 pointer-events-none"></div>
 
             <span className="text-[10px] font-black tracking-widest text-white/95 uppercase bg-black/45 px-3 py-1 rounded-full w-max leading-none relative z-10">
-              {activeDifficultyTab === 'Beginner' ? 'SPANISH A1 COURSE' : 'INTERMEDIATE BOOK COURSE'}
+              {currentCourse === 'dummies' 
+                ? 'INTERMEDIATE BOOK COURSE' 
+                : currentCourse === 'test_skills'
+                ? 'SPANISH A1 CHALLENGE'
+                : 'SPANISH A1 COURSE'}
             </span>
             <div className="flex flex-col gap-1 mt-6 relative z-10">
               <h3 className="text-3xl font-black text-white leading-tight tracking-wide drop-shadow-md">
-                {activeDifficultyTab === 'Beginner' ? 'Aprende A1' : 'Intermediate Spanish'}
+                {currentCourse === 'dummies' 
+                  ? 'Spanish For Dummies' 
+                  : currentCourse === 'test_skills'
+                  ? 'Test Your A1 Skills'
+                  : 'Aprende A1 (Learn)'}
               </h3>
               <p className="text-white/95 text-xs font-bold uppercase tracking-wider drop-shadow-sm">
-                {activeDifficultyTab === 'Beginner' ? 'Vocabulary & Interactive Practice' : 'Intermediate Spanish For Dummies'}
+                {currentCourse === 'dummies' 
+                  ? 'Intermediate Spanish' 
+                  : currentCourse === 'test_skills'
+                  ? 'A1 Checkpoint Assessments'
+                  : 'Vocabulary & Interactive Practice'}
               </p>
             </div>
           </div>
@@ -484,7 +503,11 @@ const Dashboard = ({ user, onStartLesson, token, searchQuery, currentCourse = 'b
           <h2 className="text-xl font-black text-brand-900 flex items-center gap-2">
             <Languages size={20} className="text-accent-indigo" />
             <span>
-              {activeDifficultyTab === 'Beginner' ? 'Beginner Path' : 'Book Path'} ({groupedChapters.length} Chapters)
+              {currentCourse === 'dummies' 
+                ? 'Spanish for Dummies Path' 
+                : currentCourse === 'test_skills'
+                ? 'A1 Skills Test Path'
+                : 'Complete Spanish A1 Path'} ({groupedChapters.length} Chapters)
             </span>
           </h2>
           
@@ -515,7 +538,7 @@ const Dashboard = ({ user, onStartLesson, token, searchQuery, currentCourse = 'b
 
             // A chapter is unlocked if its first lesson is unlocked (or if the user completed previous chapters)
             const isChapterUnlocked = chLessons.some(l => {
-              const status = getLessonStatus(l, l.globalIndex);
+              const status = getLessonStatus(l, l.courseIndex);
               return status.isUnlocked;
             });
 
@@ -601,7 +624,7 @@ const Dashboard = ({ user, onStartLesson, token, searchQuery, currentCourse = 'b
                       {isExpanded && (
                         <div className={`border-t mt-4 pt-4 flex flex-col gap-2.5 w-full ${isCompleted ? 'border-white/20' : 'border-brand-200'}`}>
                           {chLessons.map((lesson) => {
-                            const { isCompleted: isLCompleted, isUnlocked: isLUnlocked } = getLessonStatus(lesson, lesson.globalIndex);
+                            const { isCompleted: isLCompleted, isUnlocked: isLUnlocked } = getLessonStatus(lesson, lesson.courseIndex);
                             
                             let iconColor = 'text-brand-500 bg-brand-100';
                             let buttonStyle = 'bg-brand-200 text-brand-600 hover:bg-brand-300';
@@ -803,7 +826,7 @@ const Dashboard = ({ user, onStartLesson, token, searchQuery, currentCourse = 'b
                       {isExpanded && (
                         <div className={`border-t mt-4 pt-4 flex flex-col gap-2.5 w-full ${isCompleted ? 'border-white/20' : 'border-brand-200'}`}>
                           {chLessons.map((lesson) => {
-                            const { isCompleted: isLCompleted, isUnlocked: isLUnlocked } = getLessonStatus(lesson, lesson.globalIndex);
+                            const { isCompleted: isLCompleted, isUnlocked: isLUnlocked } = getLessonStatus(lesson, lesson.courseIndex);
                             
                             let iconColor = 'text-brand-500 bg-brand-100';
                             let buttonStyle = 'bg-brand-200 text-brand-600 hover:bg-brand-300';

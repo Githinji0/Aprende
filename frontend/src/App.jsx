@@ -356,6 +356,8 @@ function App() {
                   className={`flex items-center gap-1.5 px-3 py-1.5 border rounded-full text-[10px] font-black tracking-wide uppercase transition-all duration-200 cursor-pointer ${
                     currentCourse === 'dummies'
                       ? 'bg-indigo-50 hover:bg-indigo-100 border-indigo-200 text-indigo-700'
+                      : currentCourse === 'test_skills'
+                      ? 'bg-amber-50 hover:bg-amber-100 border-amber-200 text-amber-700'
                       : 'bg-red-50 hover:bg-red-100 border-red-200 text-red-600'
                   }`}
                   title="Click to Switch Course Track"
@@ -364,6 +366,11 @@ function App() {
                     <>
                       <BookOpen size={12} className="shrink-0 text-indigo-600" />
                       <span>For Dummies</span>
+                    </>
+                  ) : currentCourse === 'test_skills' ? (
+                    <>
+                      <Award size={12} className="shrink-0 text-amber-500" />
+                      <span>Test A1 Skills</span>
                     </>
                   ) : (
                     <>
@@ -555,6 +562,7 @@ function App() {
                   token={token} 
                   onBackToDashboard={() => setCurrentTab('dashboard')} 
                   searchQuery={searchQuery}
+                  currentCourse={currentCourse}
                 />
               )}
               {currentTab === 'games' && (

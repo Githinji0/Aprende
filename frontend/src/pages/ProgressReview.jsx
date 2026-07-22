@@ -156,7 +156,7 @@ const GRAMMAR_TOPICS = [
   }
 ];
 
-const ProgressReview = ({ user, token, onBackToDashboard, searchQuery }) => {
+const ProgressReview = ({ user, token, onBackToDashboard, searchQuery, currentCourse }) => {
   const [lessons, setLessons] = useState([]);
   const [progress, setProgress] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -202,19 +202,36 @@ const ProgressReview = ({ user, token, onBackToDashboard, searchQuery }) => {
     fetchData();
   }, [token]);
 
+  // --- COURSE FILTERING LOGIC ---
+  const activeDifficultyTab = currentCourse === 'dummies' ? 'Intermediate' : 'Beginner';
+
+  const getFilteredLessons = () => {
+    let list = lessons.filter(l => l.difficulty === activeDifficultyTab);
+    if (currentCourse === 'test_skills') {
+      list = list.filter(l => l.lessonType === 'checkpoint');
+    } else if (currentCourse === 'beginner') {
+      list = list.filter(l => l.lessonType !== 'checkpoint');
+    }
+    return list;
+  };
+
+  const filteredLessons = getFilteredLessons();
+  const filteredLessonIds = new Set(filteredLessons.map(l => l._id));
+  const filteredProgress = progress.filter(p => filteredLessonIds.has(p.lesson));
+
   // --- ANALYTICS CALCULATIONS ---
 
   // 1. Average accuracy across completed lessons
   const getAverageAccuracy = () => {
-    const completedRecords = progress.filter(p => p.completed && p.score !== undefined);
+    const completedRecords = filteredProgress.filter(p => p.completed && p.score !== undefined);
     if (completedRecords.length === 0) return 0;
     const sum = completedRecords.reduce((acc, curr) => acc + curr.score, 0);
     return Math.round(sum / completedRecords.length);
   };
 
   // 2. Completed count
-  const completedLessonsCount = progress.filter(p => p.completed).length;
-  const totalLessonsCount = lessons.length || 1;
+  const completedLessonsCount = filteredProgress.filter(p => p.completed).length;
+  const totalLessonsCount = filteredLessons.length || 1;
   const courseCompletionPercent = Math.round((completedLessonsCount / totalLessonsCount) * 100);
 
   // 3. Weekly study completions (Last 7 days)
@@ -229,7 +246,7 @@ const ProgressReview = ({ user, token, onBackToDashboard, searchQuery }) => {
       const dayStr = d.toLocaleDateString('en-US', { day: 'numeric', month: 'short' });
       
       const dateKey = d.toDateString();
-      const count = progress.filter(p => {
+      const count = filteredProgress.filter(p => {
         if (!p.completed || !p.updatedAt) return false;
         return new Date(p.updatedAt).toDateString() === dateKey;
       }).length;
@@ -245,13 +262,13 @@ const ProgressReview = ({ user, token, onBackToDashboard, searchQuery }) => {
 
   // 4. Accuracy Trend (Last 10 lessons completed)
   const getPerformanceTrend = () => {
-    const sortedProgress = progress
+    const sortedProgress = filteredProgress
       .filter(p => p.completed && p.score !== undefined && p.updatedAt)
       .sort((a, b) => new Date(a.updatedAt) - new Date(b.updatedAt))
       .slice(-10);
     
     return sortedProgress.map((p, idx) => {
-      const lessonTitle = lessons.find(l => l._id === p.lesson)?.title || 'Lesson';
+      const lessonTitle = filteredLessons.find(l => l._id === p.lesson)?.title || 'Lesson';
       return {
         index: idx + 1,
         score: p.score,
@@ -263,10 +280,10 @@ const ProgressReview = ({ user, token, onBackToDashboard, searchQuery }) => {
   // 5. Aggregate mistakes log
   const getAggregatedMistakes = () => {
     let list = [];
-    progress.forEach((prog) => {
+    filteredProgress.forEach((prog) => {
       if (prog.mistakes && prog.mistakes.length > 0) {
         prog.mistakes.forEach((m) => {
-          const lessonTitle = lessons.find(l => l._id === prog.lesson)?.title || 'Lesson';
+          const lessonTitle = filteredLessons.find(l => l._id === prog.lesson)?.title || 'Lesson';
           
           if (searchQuery && searchQuery.trim()) {
             const query = searchQuery.toLowerCase();
@@ -348,10 +365,10 @@ const ProgressReview = ({ user, token, onBackToDashboard, searchQuery }) => {
   const maxActivityCount = Math.max(...activityData.map(d => d.count), 1);
 
   const completedChapters = new Set(
-    progress
+    filteredProgress
       .filter(p => p.completed)
       .map(p => {
-        const lesson = lessons.find(l => l._id === p.lesson);
+        const lesson = filteredLessons.find(l => l._id === p.lesson);
         return lesson ? lesson.chapterNumber : null;
       })
       .filter(Boolean)
